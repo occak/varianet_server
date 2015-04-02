@@ -45,6 +45,8 @@ class ofApp : public ofBaseApp{
     
     //TCP
     ofxTCPServer server;
+    vector<string> received;
+    string title;
     
     ofTextField chat;
     

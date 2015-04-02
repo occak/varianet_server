@@ -116,17 +116,31 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
 //--------------------------------------------------------------
 void ofApp::update(){
     
+    
+    
     disc.update();
     groove.update();
     
     for(int i = 0; i< disc.getDiscIndex(); i++){
-        float amountFreq = ofMap(abs(disc.getRotationSpeed(i)), 0, 10, 0, 500);
+        float amountFreq = ofMap(abs(disc.getRotationSpeed(i)), 0, 10, 0, 5000);
         sound.synth.setParameter("amountFreq"+ofToString(i), amountFreq);
-        float amountMod = ofMap(abs(disc.getPosition(i)), 0, 50, 0, 500);
+        float amountMod = ofMap(abs(disc.getPosition(i)), 0, 50, 0, 5000);
         sound.synth.setParameter("amountMod"+ofToString(i), amountMod);
     }
     
     sound.update();
+    
+    for ( int i = 0; i < server.getLastID(); i++ ) {
+        if(server.isClientConnected(i)) {
+            string str = server.receive(i);
+            if(str.length()>0){
+                received = ofSplitString(str, ": ");
+                title = received[0];
+            }
+        }
+    }
+    
+    
     
 }
 //--------------------------------------------------------------
@@ -163,14 +177,28 @@ void ofApp::keyPressed(int key){
     if(key == ' ') groove.turn = !groove.turn;
     if(key == 'p') disc.toggleMoving(disc.selected);
     if(key == 'o') disc.resetPerlin[disc.selected] = 1;
+    if(key == '[') {
+        for(int i = 0; i<disc.getDiscIndex(); i++){
+            if (disc.isMoving(i) == 1) continue;
+            else disc.toggleMoving(i);
+        }
+    }
+    if(key == ']'){
+        for(int i = 0; i<disc.getDiscIndex(); i++){
+            disc.resetPerlin[i] = 1;
+        }
+    }
     
     if(key == 'j' && disc.selected != -1) {
         
         if(disc.getLife() > 0) {
             disc.setLife(costRotation);     // reduce life
             disc.setRotationSpeed(disc.selected, +0.05);
-            //change should update the ui as well, but how?
-            //       ofxUISlider[disc.selected]->setSlider("rotation"+ofToString(disc.selected+1));
+            
+            //update ui
+            ofxUICanvas *canvas = static_cast <ofxUICanvas*> (ui[disc.selected]);
+            ofxUISlider *slider = static_cast <ofxUISlider*> (canvas->getWidget("rotation"+ofToString(disc.selected+1)));
+            slider->setValue(disc.getRotationSpeed(disc.selected));
             
             //change sound
             float netSpeed = abs(abs(disc.getRotationSpeed(disc.selected))-abs(disc.getRotationSpeed(disc.selected-1)));
@@ -184,6 +212,11 @@ void ofApp::keyPressed(int key){
         if(disc.getLife() > 0) {
             disc.setLife(costRotation);     // reduce life
             disc.setRotationSpeed(disc.selected, -0.05);
+            
+            //update ui (w/ c++ style casting)
+            ofxUICanvas *canvas = static_cast <ofxUICanvas*> (ui[disc.selected]);
+            ofxUISlider *slider = static_cast <ofxUISlider*> (canvas->getWidget("rotation"+ofToString(disc.selected+1)));
+            slider->setValue(disc.getRotationSpeed(disc.selected));
             
             //change sound
             float netSpeed = abs(abs(disc.getRotationSpeed(disc.selected))-abs(disc.getRotationSpeed(disc.selected-1)));
@@ -338,13 +371,11 @@ void ofApp::keyPressed(int key){
     }
     if(key == 'w' && disc.selected != -1 ) {
         disc.setPosition(disc.selected, disc.getPosition(disc.selected)+1);
-        float delayTime = ofMap(disc.getPosition(disc.selected), 0, 10, 0, 1);
-        sound.synth.setParameter("factor"+ofToString(disc.selected), delayTime);
+
     }
     if(key == 's' && disc.selected != -1 ) {
         disc.setPosition(disc.selected, disc.getPosition(disc.selected)-1);
-        float delayTime = ofMap(disc.getPosition(disc.selected), 0, 10, 0, 1);
-        sound.synth.setParameter("factor"+ofToString(disc.selected), delayTime);
+
     }
     if(key == 'm' && disc.selected != -1 ) {
         if(disc.getLife() > 0){
