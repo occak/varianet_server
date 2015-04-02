@@ -150,6 +150,23 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
                 toggle4->setValue(false);
             }
             else toggle->setValue(true);
+            
+            //sound
+            if(disc.isMute(disc.selected) == 0){
+                disc.setEnvelope(disc.selected, 1);
+                sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 0));
+                sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 1));
+                sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 2));
+                sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 3));
+            }
+            else{
+                disc.setEnvelope(disc.selected, 0);
+                sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 0));
+                sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 1));
+                sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 2));
+                sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 3));
+            }
+            
         }
         else if(e.getName() == "tri"){
             ofxUIToggle *toggle = e.getToggle();
@@ -168,6 +185,22 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
                 toggle4->setValue(false);
             }
             else toggle->setValue(true);
+            
+            //sound
+            if(disc.isMute(disc.selected) == 0){
+                disc.setEnvelope(disc.selected, 2);
+                sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 0));
+                sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 1));
+                sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 2));
+                sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 3));
+            }
+            else{
+                disc.setEnvelope(disc.selected, 0);
+                sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 0));
+                sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 1));
+                sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 2));
+                sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 3));
+            }
         }
         else if(e.getName() == "saw"){
             ofxUIToggle *toggle = e.getToggle();
@@ -186,6 +219,22 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
                 toggle4->setValue(false);
             }
             else toggle->setValue(true);
+            
+            //sound
+            if(disc.isMute(disc.selected) == 0){
+                disc.setEnvelope(disc.selected, 3);
+                sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 0));
+                sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 1));
+                sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 2));
+                sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 3));
+            }
+            else{
+                disc.setEnvelope(disc.selected, 0);
+                sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 0));
+                sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 1));
+                sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 2));
+                sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 3));
+            }
         }
         else if(e.getName() == "rect"){
             ofxUIToggle *toggle = e.getToggle();
@@ -204,6 +253,22 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
                 toggle3->setValue(false);
             }
             else toggle->setValue(true);
+            
+            //sound
+            if(disc.isMute(disc.selected) == 0){
+                disc.setEnvelope(disc.selected, 4);
+                sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 0));
+                sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 1));
+                sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 2));
+                sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 3));
+            }
+            else{
+                disc.setEnvelope(disc.selected, 0);
+                sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 0));
+                sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 1));
+                sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 2));
+                sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 3));
+            }
         }
     }
 }
