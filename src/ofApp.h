@@ -39,6 +39,7 @@ class ofApp : public ofBaseApp{
     
     //game
     float costRadius, costTexture, costDensity, costRotation, costMute;
+    bool radiusChanged, textureChanged, densityChanged, rotationChanged, positionChanged = false;
 		
     
     ofEasyCam cam;

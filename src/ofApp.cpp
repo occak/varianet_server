@@ -31,7 +31,7 @@ void ofApp::setup(){
         ofxUICanvas *_ui;
         
         _ui = new ofxUICanvas("Groove " + ofToString(i+1));
-        _ui->addSlider("rotation" + ofToString(i+1), -1, 1, disc.getRotationSpeed(i));
+        _ui->addSlider("rotation" + ofToString(i+1), -10, 10, disc.getRotationSpeed(i));
         _ui->addSlider("radius" + ofToString(i+1), 15, 100, disc.getRadius(i)-disc.getRadius(i-1));
         _ui->addBiLabelSlider("density" + ofToString(i+1), "sparse", "dense", 30, 1, disc.getDensity(i));
         
@@ -39,10 +39,10 @@ void ofApp::setup(){
         else _ui->addToggle("blank", false);
         if(disc.getTexture(i)==1) _ui->addToggle("line", true);
         else _ui->addToggle("line", false);
-        if(disc.getTexture(i)==2) _ui->addToggle("tri1", true);
-        else _ui->addToggle("tri1", false);
-        if(disc.getTexture(i)==3) _ui->addToggle("tri2", true);
-        else _ui->addToggle("tri2", false);
+        if(disc.getTexture(i)==2) _ui->addToggle("tri", true);
+        else _ui->addToggle("tri", false);
+        if(disc.getTexture(i)==3) _ui->addToggle("saw", true);
+        else _ui->addToggle("saw", false);
         if(disc.getTexture(i)==4) _ui->addToggle("rect", true);
         else _ui->addToggle("rect", false);
         
@@ -83,21 +83,30 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
     for(int i = 0; i < disc.getDiscIndex(); i++){
         if(e.getName() == "rotation" + ofToString(i+1)){
             ofxUISlider *slider = e.getSlider();
-            disc.setRotationSpeed(i, (slider->getScaledValue()-(disc.getRotationSpeed(i)+disc.getRotationSpeed(i-1))));
+            
+            if(disc.getLife()>0){
+                rotationChanged = true;
+                disc.setRotationSpeed(i, (slider->getScaledValue()-(disc.getRotationSpeed(i)+disc.getRotationSpeed(i-1))));
+                //change sound
+                float netSpeed = abs(abs(disc.getRotationSpeed(disc.selected))-abs(disc.getRotationSpeed(disc.selected-1)));
+                float beat = ofMap(netSpeed, 0, 10, 0, 1000);
+                sound.synth.setParameter("bpm"+ofToString(disc.selected), beat);
+            }
         }
         else if(e.getName() == "radius" + ofToString(i+1)){
             ofxUISlider *slider = e.getSlider();
+            
             if(disc.getLife() > 0) {
-                disc.setLife(costRadius);
-                float q = ofMap(disc.getRadius(disc.selected)-disc.getRadius(disc.selected-1), 15, 100, 50, 0);
-                sound.synth.setParameter("q"+ofToString(disc.selected), q);
+                radiusChanged = true;
                 disc.setRadius(i, slider->getScaledValue());
+                float q = ofMap(disc.getRadius(disc.selected)-disc.getRadius(disc.selected-1), 15, 100, 10, 0);
+                sound.synth.setParameter("q"+ofToString(disc.selected), q);
             }
         }
         else if(e.getName() == "density" + ofToString(i+1)){
             ofxUISlider *slider = e.getSlider();
             if(disc.getLife() > 0) {
-                disc.setLife(costDensity);
+                densityChanged = true;
                 disc.setDensity(i, slider->getScaledValue());
                 float envelopeCoeff = ofMap(disc.getDensity(i), 1, 30, 1, 5);
                 sound.synth.setParameter("envelope"+ofToString(i),envelopeCoeff);
@@ -106,9 +115,95 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
                 
             }
         }
-        else if(e.getName() == "blank" + ofToString(i+1)){
+        else if(e.getName() == "blank"){
             ofxUIToggle *toggle = e.getToggle();
-            
+            int texture = disc.getTexture(disc.selected);
+            if(disc.getLife() > 0 && texture != 0) {
+                textureChanged = true;
+                disc.setTexture(disc.selected, 0);
+                ofxUICanvas *canvas = static_cast <ofxUICanvas*> (ui[disc.selected]);
+                ofxUIToggle *toggle1 = static_cast <ofxUIToggle*> (canvas->getWidget("line"));
+                ofxUIToggle *toggle2 = static_cast <ofxUIToggle*> (canvas->getWidget("tri"));
+                ofxUIToggle *toggle3 = static_cast <ofxUIToggle*> (canvas->getWidget("saw"));
+                ofxUIToggle *toggle4 = static_cast <ofxUIToggle*> (canvas->getWidget("rect"));
+                toggle1->setValue(false);
+                toggle2->setValue(false);
+                toggle3->setValue(false);
+                toggle4->setValue(false);
+            }
+            else toggle->setValue(true);
+        }
+        else if(e.getName() == "line"){
+            ofxUIToggle *toggle = e.getToggle();
+            int texture = disc.getTexture(disc.selected);
+            if(disc.getLife() > 0 && texture != 1) {
+                textureChanged = true;
+                disc.setTexture(disc.selected, 1);
+                ofxUICanvas *canvas = static_cast <ofxUICanvas*> (ui[disc.selected]);
+                ofxUIToggle *toggle0 = static_cast <ofxUIToggle*> (canvas->getWidget("blank"));
+                ofxUIToggle *toggle2 = static_cast <ofxUIToggle*> (canvas->getWidget("tri"));
+                ofxUIToggle *toggle3 = static_cast <ofxUIToggle*> (canvas->getWidget("saw"));
+                ofxUIToggle *toggle4 = static_cast <ofxUIToggle*> (canvas->getWidget("rect"));
+                toggle0->setValue(false);
+                toggle2->setValue(false);
+                toggle3->setValue(false);
+                toggle4->setValue(false);
+            }
+            else toggle->setValue(true);
+        }
+        else if(e.getName() == "tri"){
+            ofxUIToggle *toggle = e.getToggle();
+            int texture = disc.getTexture(disc.selected);
+            if(disc.getLife() > 0 && texture != 2) {
+                textureChanged = true;
+                disc.setTexture(disc.selected, 2);
+                ofxUICanvas *canvas = static_cast <ofxUICanvas*> (ui[disc.selected]);
+                ofxUIToggle *toggle0 = static_cast <ofxUIToggle*> (canvas->getWidget("blank"));
+                ofxUIToggle *toggle1 = static_cast <ofxUIToggle*> (canvas->getWidget("line"));
+                ofxUIToggle *toggle3 = static_cast <ofxUIToggle*> (canvas->getWidget("saw"));
+                ofxUIToggle *toggle4 = static_cast <ofxUIToggle*> (canvas->getWidget("rect"));
+                toggle0->setValue(false);
+                toggle1->setValue(false);
+                toggle3->setValue(false);
+                toggle4->setValue(false);
+            }
+            else toggle->setValue(true);
+        }
+        else if(e.getName() == "saw"){
+            ofxUIToggle *toggle = e.getToggle();
+            int texture = disc.getTexture(disc.selected);
+            if(disc.getLife() > 0 && texture != 3) {
+                textureChanged = true;
+                disc.setTexture(disc.selected, 3);
+                ofxUICanvas *canvas = static_cast <ofxUICanvas*> (ui[disc.selected]);
+                ofxUIToggle *toggle0 = static_cast <ofxUIToggle*> (canvas->getWidget("blank"));
+                ofxUIToggle *toggle1 = static_cast <ofxUIToggle*> (canvas->getWidget("line"));
+                ofxUIToggle *toggle2 = static_cast <ofxUIToggle*> (canvas->getWidget("tri"));
+                ofxUIToggle *toggle4 = static_cast <ofxUIToggle*> (canvas->getWidget("rect"));
+                toggle0->setValue(false);
+                toggle1->setValue(false);
+                toggle2->setValue(false);
+                toggle4->setValue(false);
+            }
+            else toggle->setValue(true);
+        }
+        else if(e.getName() == "rect"){
+            ofxUIToggle *toggle = e.getToggle();
+            int texture = disc.getTexture(disc.selected);
+            if(disc.getLife() > 0 && texture != 4) {
+                textureChanged = true;
+                disc.setTexture(disc.selected, 4);
+                ofxUICanvas *canvas = static_cast <ofxUICanvas*> (ui[disc.selected]);
+                ofxUIToggle *toggle0 = static_cast <ofxUIToggle*> (canvas->getWidget("blank"));
+                ofxUIToggle *toggle1 = static_cast <ofxUIToggle*> (canvas->getWidget("line"));
+                ofxUIToggle *toggle2 = static_cast <ofxUIToggle*> (canvas->getWidget("tri"));
+                ofxUIToggle *toggle3 = static_cast <ofxUIToggle*> (canvas->getWidget("saw"));
+                toggle0->setValue(false);
+                toggle1->setValue(false);
+                toggle2->setValue(false);
+                toggle3->setValue(false);
+            }
+            else toggle->setValue(true);
         }
     }
 }
@@ -286,6 +381,7 @@ void ofApp::keyPressed(int key){
                 sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 2));
                 sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 3));
             }
+            
         }
     }
     if(key == '2') {
@@ -371,11 +467,11 @@ void ofApp::keyPressed(int key){
     }
     if(key == 'w' && disc.selected != -1 ) {
         disc.setPosition(disc.selected, disc.getPosition(disc.selected)+1);
-
+        
     }
     if(key == 's' && disc.selected != -1 ) {
         disc.setPosition(disc.selected, disc.getPosition(disc.selected)-1);
-
+        
     }
     if(key == 'm' && disc.selected != -1 ) {
         if(disc.getLife() > 0){
@@ -424,28 +520,26 @@ void ofApp::mouseDragged(int x, int y, int button){
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
     
-    //    float distance = sqrt(pow((float)(x-ofGetWidth()/2),2)+ pow((float)(y-ofGetHeight()/2), 2));
-    //    cout << distance <<endl;
-    //
-    //    for(int i = 0; i < disc.getDiscIndex(); i++){
-    //
-    //        if(distance < disc.getRadius(0)) {
-    //            disc.selected = 0;
-    //            cout << disc.selected <<endl;
-    //        }
-    //        else if( distance > disc.getRadius(i) && distance < disc.getRadius(i+1)) {
-    //            disc.selected = i+1;
-    //            cout << disc.selected <<endl;
-    //        }
-    //
-    //    }
-    
-    
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
-    
+    if(radiusChanged) {
+        radiusChanged = false;
+        disc.setLife(costRadius);
+    }
+    else if(densityChanged){
+        densityChanged = false;
+        disc.setLife(costDensity);
+    }
+    else if(textureChanged){
+        textureChanged = false;
+        disc.setLife(costTexture);
+    }
+    else if(rotationChanged){
+        rotationChanged = false;
+        disc.setLife(costRotation);
+    }
 }
 
 //--------------------------------------------------------------
