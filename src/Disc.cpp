@@ -49,6 +49,10 @@ void Disc::setup(){
         
         //muting, all initially false
         mute.push_back(0);
+        
+        //z-motion is off
+        perlin.push_back(0);
+        resetPerlin.push_back(0);
     }
    
 }
@@ -58,18 +62,18 @@ void Disc::update(){
     for(int i = 0; i < discIndex; i++){
         
         
-    if(resetPerlin){
+    if(resetPerlin[i] == 1){
         setPosition(i, 0);
-        perlin = false;
+        perlin[i] = 0;
         }
         
-    if(perlin){
+    if(perlin[i] == 1){
         
         float position = getPosition(i);
         
         float time = ofGetElapsedTimef();
         float timeScale = .1;
-        float displacementScale = 2;
+        float displacementScale = 10;
         float timeOffset = posOffset[i];
         
         // A typical design pattern for using Perlin noise uses a couple parameters:
@@ -87,9 +91,9 @@ void Disc::update(){
         setPosition(i, position);
         
         }
-   
+        resetPerlin[i] = 0;
     }
-    resetPerlin = false;
+    
 }
 //----------------------------------
 
@@ -277,6 +281,22 @@ int Disc::toggleMute(int index){
     if(mute[index] == 0) mute[index] = 1;
     else mute[index] = 0;
     return mute[index];
+    
+}
+
+//----------------------------------
+int Disc::isMoving(int index) const{
+    
+    return perlin[index];
+    
+}
+
+//----------------------------------
+int Disc::toggleMoving(int index){
+    
+    if(perlin[index] == 0) perlin[index] = 1;
+    else perlin[index] = 0;
+    return perlin[index];
     
 }
 

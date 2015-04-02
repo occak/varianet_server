@@ -89,7 +89,7 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
             ofxUISlider *slider = e.getSlider();
             if(disc.getLife() > 0) {
                 disc.setLife(costRadius);
-                float q = ofMap(disc.getRadius(disc.selected)-disc.getRadius(disc.selected-1), 15, 100, 100, 1);
+                float q = ofMap(disc.getRadius(disc.selected)-disc.getRadius(disc.selected-1), 15, 100, 50, 0);
                 sound.synth.setParameter("q"+ofToString(disc.selected), q);
                 disc.setRadius(i, slider->getScaledValue());
             }
@@ -118,6 +118,14 @@ void ofApp::update(){
     
     disc.update();
     groove.update();
+    
+    for(int i = 0; i< disc.getDiscIndex(); i++){
+        float amountFreq = ofMap(abs(disc.getRotationSpeed(i)), 0, 10, 0, 500);
+        sound.synth.setParameter("amountFreq"+ofToString(i), amountFreq);
+        float amountMod = ofMap(abs(disc.getPosition(i)), 0, 50, 0, 500);
+        sound.synth.setParameter("amountMod"+ofToString(i), amountMod);
+    }
+    
     sound.update();
     
 }
@@ -153,14 +161,14 @@ void ofApp::draw(){
 void ofApp::keyPressed(int key){
     
     if(key == ' ') groove.turn = !groove.turn;
-    if(key == 'p') disc.perlin = !disc.perlin;
-    if(key == 'o') disc.resetPerlin = !disc.resetPerlin;
+    if(key == 'p') disc.toggleMoving(disc.selected);
+    if(key == 'o') disc.resetPerlin[disc.selected] = 1;
     
     if(key == 'j' && disc.selected != -1) {
         
         if(disc.getLife() > 0) {
             disc.setLife(costRotation);     // reduce life
-            disc.setRotationSpeed(disc.selected, disc.getRotationSpeed(disc.selected)+0.05);
+            disc.setRotationSpeed(disc.selected, +0.05);
             //change should update the ui as well, but how?
             //       ofxUISlider[disc.selected]->setSlider("rotation"+ofToString(disc.selected+1));
             
@@ -175,7 +183,7 @@ void ofApp::keyPressed(int key){
         
         if(disc.getLife() > 0) {
             disc.setLife(costRotation);     // reduce life
-            disc.setRotationSpeed(disc.selected, disc.getRotationSpeed(disc.selected)-0.05);
+            disc.setRotationSpeed(disc.selected, -0.05);
             
             //change sound
             float netSpeed = abs(abs(disc.getRotationSpeed(disc.selected))-abs(disc.getRotationSpeed(disc.selected-1)));

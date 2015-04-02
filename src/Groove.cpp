@@ -119,7 +119,7 @@ void Groove::draw(){
         ofSetLineWidth(3);
         ofNoFill();
         if( i != disc->selected && disc->isMute(i) == 1) ofSetColor(ofColor::lightGrey);
-        else if( i == disc->selected && disc->isMute(disc->selected) == 1) ofSetColor(ofColor::darkGrey);
+        else if( i == disc->selected && disc->isMute(disc->selected) == 1) ofSetColor(ofColor::lightPink);
         else if( i == disc->selected && disc->isMute(disc->selected) == 0) ofSetColor(ofColor::red);
         else ofSetColor(ofColor::black);
         
@@ -128,7 +128,7 @@ void Groove::draw(){
         ofCircle(0,0,disc->getPosition(i), disc->getRadius(i));
         
         if( i != disc->selected && disc->isMute(i) == 1) ofSetColor(ofColor::lightGrey);
-        else if( i == disc->selected && disc->isMute(disc->selected) == 1) ofSetColor(ofColor::darkGrey);
+        else if( i == disc->selected && disc->isMute(disc->selected) == 1) ofSetColor(ofColor::lightPink);
         else if( i == disc->selected && disc->isMute(disc->selected) == 0) ofSetColor(ofColor::red);
         else ofSetColor(ofColor::black);
         ofFill();

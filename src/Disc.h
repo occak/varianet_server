@@ -58,9 +58,11 @@ class Disc{
     int isMute(int index) const;
     int toggleMute(int index);
     
+    int isMoving(int index) const;
+    int toggleMoving(int index);
+    
     int selected = -1;
-    bool perlin = false;
-    bool resetPerlin = false;
+    vector<int> resetPerlin;
     
 private:
     
@@ -83,7 +85,11 @@ private:
     vector< vector <float> > envelope;
     
     //mute
-    vector < int > mute;
+    vector<int> mute;
+    
+    // z-motion
+    vector<int> perlin;
+    
 };
 
 
