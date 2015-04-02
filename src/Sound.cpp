@@ -18,16 +18,16 @@ void Sound::setup(Disc* disc){
     
     
     vector<float> scale;
-    scale.push_back(ofRandom(13));
-    scale.push_back(ofRandom(13));
-    scale.push_back(ofRandom(13));
-    scale.push_back(ofRandom(13));
-    scale.push_back(ofRandom(13));
-    scale.push_back(ofRandom(13));
-    scale.push_back(ofRandom(13));
-    scale.push_back(ofRandom(13));
-    scale.push_back(ofRandom(13));
-    scale.push_back(ofRandom(13));
+    scale.push_back(ofRandom(25));
+    scale.push_back(ofRandom(25));
+    scale.push_back(ofRandom(25));
+    scale.push_back(ofRandom(25));
+    scale.push_back(ofRandom(25));
+    scale.push_back(ofRandom(25));
+    scale.push_back(ofRandom(25));
+    scale.push_back(ofRandom(25));
+    scale.push_back(ofRandom(25));
+    scale.push_back(ofRandom(25));
     
     for(int i = 0; i < disc->getDiscIndex(); i++){
         
@@ -49,7 +49,7 @@ void Sound::setup(Disc* disc){
         ControlGenerator pulseLength = synth.addParameter("pulseLength"+ofToString(i), pulseRatio);
         ControlGenerator pulse = ControlPulse().length(pulseLength).input(metronome);
         
-        float envelopeCoeff = ofMap(disc->getDensity(i), 1, 30, 1, 5);
+        float envelopeCoeff = ofMap(disc->getDensity(i), 1, 30, .1, 10);
         ControlGenerator envelope = synth.addParameter("envelope"+ofToString(i), envelopeCoeff);
         ControlGenerator attack = synth.addParameter("attack"+ofToString(i),disc->getEnvelope(i, 0));
         ControlGenerator decay = synth.addParameter("decay"+ofToString(i),disc->getEnvelope(i, 1));
@@ -61,17 +61,17 @@ void Sound::setup(Disc* disc){
         Generator snd = SawtoothWave();
         groove = snd * amplitude;
         
-        float qTarget = ofMap(disc->getRadius(i)-disc->getRadius(i-1), 15, 100, 50, 10);
+        float qTarget = ofMap(disc->getRadius(i)-disc->getRadius(i-1), 15, 100, 100, 1);
         float cutoffTarget = ofMap(disc->getRadius(i)-disc->getRadius(i-1), 15, 100, 0, 50);
         
         ControlGenerator cutoff = synth.addParameter("frequency"+ofToString(i), cutoffTarget);
         ControlSnapToScale scaleSnapper = ControlSnapToScale().setScale(scale);
-        scaleSnapper.input(50 + cutoff);
+        scaleSnapper.input(52 + cutoff);
         ControlGenerator filterFreq = ControlMidiToFreq().input(scaleSnapper);
         
         ControlGenerator q = synth.addParameter("q"+ofToString(i),qTarget).min(0).max(50);
         
-        Generator filter = BPF24().input(groove).cutoff(filterFreq).Q(q);
+        Generator filter = BPF24().input(groove).cutoff(filterFreq+100).Q(q);
         Generator limiter = Limiter().input(2*filter);
         
         master = master + limiter;

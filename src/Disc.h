@@ -41,7 +41,7 @@ class Disc{
     float setRotation(int index, float newRotation);
     
     float getRotationSpeed(int index) const;
-    float setRotationSpeed(int index, float newSpeed);
+    float setRotationSpeed(int index, float addSpeed);
     
     int getTexture(int index) const;
     int setTexture(int index, int type);

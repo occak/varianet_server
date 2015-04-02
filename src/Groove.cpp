@@ -127,14 +127,6 @@ void Groove::draw(){
         ofCircle(0,0,disc->getPosition(i), disc->getRadius(i-1));
         ofCircle(0,0,disc->getPosition(i), disc->getRadius(i));
         
-        //        ofFill();
-        //        ofSetColor(ofColor::white);
-        //        ofCircle(0,0,disc->getPosition(i), disc->getRadius(i));
-        //
-        //        ofFill();
-        //        ofSetColor(ofColor::black, 0);
-        //        ofCircle(0,0,disc->getPosition(i), disc->getRadius(i-1));
-        //
         if( i != disc->selected && disc->isMute(i) == 1) ofSetColor(ofColor::lightGrey);
         else if( i == disc->selected && disc->isMute(disc->selected) == 1) ofSetColor(ofColor::darkGrey);
         else if( i == disc->selected && disc->isMute(disc->selected) == 0) ofSetColor(ofColor::red);
@@ -189,36 +181,15 @@ void Groove::draw(){
                                  disc->getPosition(i));
                         ofEndShape();
                         
-                        
-                        //                        ofTriangle(disc->getRadius(i-1)*cos((a - disc->getDensity(i))*PI/180),   //x1
-                        //                                   disc->getRadius(i-1)*sin((a - disc->getDensity(i))*PI/180),   //y1
-                        //                                   disc->getPosition(i),                                         //z1
-                        //                                   disc->getRadius(i)*cos((a - disc->getDensity(i)/2)*PI/180),   //x2
-                        //                                   disc->getRadius(i)*sin((a - disc->getDensity(i)/2)*PI/180),   //y2
-                        //                                   disc->getPosition(i),                                         //z2
-                        //                                   disc->getRadius(i-1)*cos(a*PI/180),                           //x3
-                        //                                   disc->getRadius(i-1)*sin(a*PI/180),                           //y3
-                        //                                   disc->getPosition(i));                                        //z3
-                        
                     }
                 }
                 
                 break;
-            case 3: //triangle reverse
+            case 3: //saw
                 
                 for(int a = 0; a < 360; a++){
                     
                     if(a % disc->getDensity(i) == 0){
-                        
-                        //                        ofTriangle(disc->getRadius(i)*cos((a - disc->getDensity(i))*PI/180),        //x1
-                        //                                   disc->getRadius(i)*sin((a - disc->getDensity(i))*PI/180),        //y1
-                        //                                   disc->getPosition(i),                                            //z1
-                        //                                   disc->getRadius(i-1)*cos((a - disc->getDensity(i)/2)*PI/180),    //x2
-                        //                                   disc->getRadius(i-1)*sin((a - disc->getDensity(i)/2)*PI/180),    //y2
-                        //                                   disc->getPosition(i),                                            //z2
-                        //                                   disc->getRadius(i)*cos(a*PI/180),                                //x3
-                        //                                   disc->getRadius(i)*sin(a*PI/180),                                //y3
-                        //                                   disc->getPosition(i));
                         
                         ofSetPolyMode(OF_POLY_WINDING_ODD);
                         ofBeginShape();
@@ -282,75 +253,10 @@ void Groove::draw(){
                 break;
             }
                 
-            {
-            case 5: //saw
-                
-                for(int a = 0; a < 360; a++){
-                    
-                    if(a % disc->getDensity(i) == 0){
-                        
-                        ofSetPolyMode(OF_POLY_WINDING_ODD);
-                        ofBeginShape();
-                        ofVertex(disc->getRadius(i-1)*cos(a*PI/180),
-                                 disc->getRadius(i-1)*sin(a*PI/180),
-                                 disc->getPosition(i));
-                        ofVertex(disc->getRadius(i)*cos((a + disc->getDensity(i))*PI/180),
-                                 disc->getRadius(i)*sin((a + disc->getDensity(i))*PI/180),
-                                 disc->getPosition(i));
-                        ofVertex(disc->getRadius(i-1)*cos((a + disc->getDensity(i))*PI/180),
-                                 disc->getRadius(i-1)*sin((a + disc->getDensity(i))*PI/180),
-                                 disc->getPosition(i));
-                        ofVertex(disc->getRadius(i-1)*cos((a + disc->getDensity(i)/2)*PI/180),
-                                 disc->getRadius(i-1)*sin((a + disc->getDensity(i)/2)*PI/180),
-                                 disc->getPosition(i));
-                        ofEndShape();
-                    }
-                    break;
-                }
-                
-                {
-                case 6: //not rectangle but funny
-                    
-                    bool space = false;
-                    
-                    for(int a = 0; a < 360; a++){
-                        
-                        if(space == false && a % disc->getDensity(i) == 0){
-                            
-                            ofSetPolyMode(OF_POLY_WINDING_ODD);
-                            ofBeginShape();
-                            ofVertex(disc->getRadius(i-1)*cos((a - disc->getDensity(i))*PI/180),
-                                     disc->getRadius(i)*sin((a - disc->getDensity(i))*PI/180),
-                                     disc->getPosition(i));
-                            ofVertex(disc->getRadius(i-1)*cos(a*PI/180),
-                                     disc->getRadius(i-1)*sin(a*PI/180),
-                                     disc->getPosition(i));
-                            ofVertex(disc->getRadius(i)*cos(a*PI/180),
-                                     disc->getRadius(i-1)*sin(a*PI/180),
-                                     disc->getPosition(i));
-                            ofVertex(disc->getRadius(i)*cos((a - disc->getDensity(i))*PI/180),
-                                     disc->getRadius(i)*sin((a - disc->getDensity(i))*PI/180),
-                                     disc->getPosition(i));
-                            
-                            
-                            ofEndShape();
-                            
-                            space = true;
-                        }
-                        else if (space == true && a % disc->getDensity(i) == 0) space = false;
-                        
-                        
-                    }
-                    break;
-                }
-                
                 
             default:
                 //something something
                 break;
-            }
         }
     }
-    
-    
 }

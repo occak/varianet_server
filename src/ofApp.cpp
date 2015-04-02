@@ -34,8 +34,6 @@ void ofApp::setup(){
         _ui->addSlider("rotation" + ofToString(i+1), -1, 1, disc.getRotationSpeed(i));
         _ui->addSlider("radius" + ofToString(i+1), 15, 100, disc.getRadius(i)-disc.getRadius(i-1));
         _ui->addBiLabelSlider("density" + ofToString(i+1), "sparse", "dense", 30, 1, disc.getDensity(i));
-        //        _ui->addToggleMatrix("texture"+ofToString(i+1), 1, 5)->setToggle(0,disc.getTexture(i),true);
-        
         
         if(disc.getTexture(i)==0) _ui->addToggle("blank", true);
         else _ui->addToggle("blank", false);
@@ -85,13 +83,13 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
     for(int i = 0; i < disc.getDiscIndex(); i++){
         if(e.getName() == "rotation" + ofToString(i+1)){
             ofxUISlider *slider = e.getSlider();
-            disc.setRotationSpeed(i, slider->getScaledValue());
+            disc.setRotationSpeed(i, (slider->getScaledValue()-(disc.getRotationSpeed(i)+disc.getRotationSpeed(i-1))));
         }
         else if(e.getName() == "radius" + ofToString(i+1)){
             ofxUISlider *slider = e.getSlider();
             if(disc.getLife() > 0) {
                 disc.setLife(costRadius);
-                float q = ofMap(disc.getRadius(disc.selected)-disc.getRadius(disc.selected-1), 15, 100, 50, 10);
+                float q = ofMap(disc.getRadius(disc.selected)-disc.getRadius(disc.selected-1), 15, 100, 100, 1);
                 sound.synth.setParameter("q"+ofToString(disc.selected), q);
                 disc.setRadius(i, slider->getScaledValue());
             }
@@ -162,7 +160,7 @@ void ofApp::keyPressed(int key){
         
         if(disc.getLife() > 0) {
             disc.setLife(costRotation);     // reduce life
-            disc.setRotationSpeed(disc.selected, +0.05);
+            disc.setRotationSpeed(disc.selected, disc.getRotationSpeed(disc.selected)+0.05);
             //change should update the ui as well, but how?
             //       ofxUISlider[disc.selected]->setSlider("rotation"+ofToString(disc.selected+1));
             
@@ -177,7 +175,7 @@ void ofApp::keyPressed(int key){
         
         if(disc.getLife() > 0) {
             disc.setLife(costRotation);     // reduce life
-            disc.setRotationSpeed(disc.selected, -0.05);
+            disc.setRotationSpeed(disc.selected, disc.getRotationSpeed(disc.selected)-0.05);
             
             //change sound
             float netSpeed = abs(abs(disc.getRotationSpeed(disc.selected))-abs(disc.getRotationSpeed(disc.selected-1)));
