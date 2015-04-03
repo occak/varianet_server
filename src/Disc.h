@@ -49,6 +49,9 @@ class Disc{
     float getPosition(int index) const;
     float setPosition(int index, float newPosition);
     
+    float getPosOffset(int index) const;
+    float setPosOffset(int index, float newOffset);
+    
     float getLife() const;
     float setLife(float cost);
     

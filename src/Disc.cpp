@@ -74,7 +74,7 @@ void Disc::update(){
         float time = ofGetElapsedTimef();
         float timeScale = .1;
         float displacementScale = 10;
-        float timeOffset = posOffset[i];
+        float timeOffset = getPosOffset(i);
         
         // A typical design pattern for using Perlin noise uses a couple parameters:
         // ofSignedNoise(time*timeScale+timeOffset)*displacementScale
@@ -193,6 +193,19 @@ float Disc::getPosition(int index) const{
 float Disc::setPosition(int index, float newPosition){
     
     return zPosition[index] = newPosition;
+}
+
+//----------------------------------
+
+float Disc::getPosOffset(int index) const{
+    
+    return posOffset[index];
+}
+//----------------------------------
+
+float Disc::setPosOffset (int index, float newOffset){
+    
+    return posOffset[index] = newOffset;
 }
 
 //----------------------------------

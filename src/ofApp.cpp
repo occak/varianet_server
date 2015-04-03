@@ -296,6 +296,22 @@ void ofApp::update(){
             if(str.length()>0){
                 received = ofSplitString(str, ": ");
                 title = received[0];
+                if (title == "hello") {
+                    string state;   //prepare to send the current state of the server
+                    state += "discIndex: " + ofToString(disc.getDiscIndex()) + "//";
+                    for(int j = 0; j < disc.getDiscIndex(); j++){
+                        state += "radius"+ofToString(i)+": " + ofToString(disc.getRadius(i)) + "//";
+                        state += "density"+ofToString(i)+": " + ofToString(disc.getDensity(i)) + "//";
+                        state += "rotation"+ofToString(i)+": " + ofToString(disc.getRotation(i)) + "//";
+                        state += "rotationSpeed"+ofToString(i)+": " + ofToString(disc.getRotationSpeed(i)) + "//";
+                        state += "texture"+ofToString(i)+": " + ofToString(disc.getTexture(i)) + "//";
+                        state += "zPosition"+ofToString(i)+": " + ofToString(disc.getPosition(i)) + "//";
+                        state += "posOffset"+ofToString(i)+": " + ofToString(disc.getPosOffset(i)) + "//";
+                        state += "mute"+ofToString(i)+": " + ofToString(disc.isMute(i)) + "//";
+                        state += "perlin"+ofToString(i)+": " + ofToString(disc.isMoving(i)) + "//";
+                    }
+                    server.send(i, state);  //send current values to client
+                }
             }
         }
     }
