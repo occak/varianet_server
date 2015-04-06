@@ -33,6 +33,8 @@ class ofApp : public ofBaseApp{
     double phase;
     float volume;
     
+    void soundChange(string name, int index, float value);
+    
     //ui
     void exit();
     void guiEvent(ofxUIEventArgs &e);

@@ -18,7 +18,7 @@ void ofApp::setup(){
     ofBackground(255);
     
     //set up network
-    server.setup(10002);
+    server.setup(10001);
     server.setMessageDelimiter("varianet");
     
     // set up values of objects
@@ -90,7 +90,7 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
                 //change sound
                 float netSpeed = abs(abs(disc.getRotationSpeed(disc.selected))-abs(disc.getRotationSpeed(disc.selected-1)));
                 float beat = ofMap(netSpeed, 0, 10, 0, 1000);
-                sound.synth.setParameter("bpm"+ofToString(disc.selected), beat);
+                soundChange("bpm", disc.selected, beat);
             }
         }
         else if(e.getName() == "radius" + ofToString(i+1)){
@@ -98,9 +98,9 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
             
             if(disc.getLife() > 0) {
                 radiusChanged = true;
-                disc.setRadius(i, slider->getScaledValue());
+                disc.setThickness(i, slider->getScaledValue());
                 float q = ofMap(disc.getRadius(disc.selected)-disc.getRadius(disc.selected-1), 15, 100, 10, 0);
-                sound.synth.setParameter("q"+ofToString(disc.selected), q);
+                soundChange("q", disc.selected, q);
             }
         }
         else if(e.getName() == "density" + ofToString(i+1)){
@@ -109,9 +109,9 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
                 densityChanged = true;
                 disc.setDensity(i, slider->getScaledValue());
                 float envelopeCoeff = ofMap(disc.getDensity(i), 1, 30, 1, 5);
-                sound.synth.setParameter("envelope"+ofToString(i),envelopeCoeff);
                 float pulseRatio = ofMap(disc.getDensity(i), 1, 30, 0.001, 1);
-                sound.synth.setParameter("pulseLength"+ofToString(i), pulseRatio);
+                soundChange("envelopeWidth", disc.selected, envelopeCoeff);
+                soundChange("pulseLength", disc.selected, pulseRatio);
                 
             }
         }
@@ -152,20 +152,7 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
             else toggle->setValue(true);
             
             //sound
-            if(disc.isMute(disc.selected) == 0){
-                disc.setEnvelope(disc.selected, 1);
-                sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 0));
-                sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 1));
-                sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 2));
-                sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 3));
-            }
-            else{
-                disc.setEnvelope(disc.selected, 0);
-                sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 0));
-                sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 1));
-                sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 2));
-                sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 3));
-            }
+            soundChange("envelope", disc.selected, 1);
             
         }
         else if(e.getName() == "tri"){
@@ -187,20 +174,7 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
             else toggle->setValue(true);
             
             //sound
-            if(disc.isMute(disc.selected) == 0){
-                disc.setEnvelope(disc.selected, 2);
-                sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 0));
-                sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 1));
-                sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 2));
-                sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 3));
-            }
-            else{
-                disc.setEnvelope(disc.selected, 0);
-                sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 0));
-                sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 1));
-                sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 2));
-                sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 3));
-            }
+            soundChange("envelope", disc.selected, 2);
         }
         else if(e.getName() == "saw"){
             ofxUIToggle *toggle = e.getToggle();
@@ -221,20 +195,7 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
             else toggle->setValue(true);
             
             //sound
-            if(disc.isMute(disc.selected) == 0){
-                disc.setEnvelope(disc.selected, 3);
-                sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 0));
-                sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 1));
-                sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 2));
-                sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 3));
-            }
-            else{
-                disc.setEnvelope(disc.selected, 0);
-                sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 0));
-                sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 1));
-                sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 2));
-                sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 3));
-            }
+            soundChange("envelope", disc.selected, 3);
         }
         else if(e.getName() == "rect"){
             ofxUIToggle *toggle = e.getToggle();
@@ -255,21 +216,7 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
             else toggle->setValue(true);
             
             //sound
-            if(disc.isMute(disc.selected) == 0){
-                disc.setEnvelope(disc.selected, 4);
-                sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 0));
-                sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 1));
-                sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 2));
-                sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 3));
-            }
-            else{
-                disc.setEnvelope(disc.selected, 0);
-                sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 0));
-                sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 1));
-                sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 2));
-                sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 3));
-            }
-        }
+            soundChange("envelope", disc.selected, 4);        }
     }
 }
 
@@ -294,23 +241,26 @@ void ofApp::update(){
         if(server.isClientConnected(i)) {
             string str = server.receive(i);
             if(str.length()>0){
-                received = ofSplitString(str, ": ");
+                received = ofSplitString(str, "//");
                 title = received[0];
+                
                 if (title == "hello") {
                     string state;   //prepare to send the current state of the server
+                    state += "state//";
                     state += "discIndex: " + ofToString(disc.getDiscIndex()) + "//";
                     for(int j = 0; j < disc.getDiscIndex(); j++){
-                        state += "radius"+ofToString(i)+": " + ofToString(disc.getRadius(i)) + "//";
-                        state += "density"+ofToString(i)+": " + ofToString(disc.getDensity(i)) + "//";
-                        state += "rotation"+ofToString(i)+": " + ofToString(disc.getRotation(i)) + "//";
-                        state += "rotationSpeed"+ofToString(i)+": " + ofToString(disc.getRotationSpeed(i)) + "//";
-                        state += "texture"+ofToString(i)+": " + ofToString(disc.getTexture(i)) + "//";
-                        state += "zPosition"+ofToString(i)+": " + ofToString(disc.getPosition(i)) + "//";
-                        state += "posOffset"+ofToString(i)+": " + ofToString(disc.getPosOffset(i)) + "//";
-                        state += "mute"+ofToString(i)+": " + ofToString(disc.isMute(i)) + "//";
-                        state += "perlin"+ofToString(i)+": " + ofToString(disc.isMoving(i)) + "//";
+                        state += "radius"+ofToString(j)+": " + ofToString(disc.getRadius(j)) + "//";
+                        state += "density"+ofToString(j)+": " + ofToString(disc.getDensity(j)) + "//";
+                        state += "rotation"+ofToString(j)+": " + ofToString(disc.getRotation(j)) + "//";
+                        state += "rotationSpeed"+ofToString(j)+": " + ofToString(disc.getRotationSpeed(j)) + "//";
+                        state += "texture"+ofToString(j)+": " + ofToString(disc.getTexture(j)) + "//";
+                        state += "zPosition"+ofToString(j)+": " + ofToString(disc.getPosition(j)) + "//";
+                        state += "posOffset"+ofToString(j)+": " + ofToString(disc.getPosOffset(j)) + "//";
+                        state += "mute"+ofToString(j)+": " + ofToString(disc.isMute(j)) + "//";
+                        state += "perlin"+ofToString(j)+": " + ofToString(disc.isMoving(j)) + "//";
                     }
                     server.send(i, state);  //send current values to client
+                    cout<< "sent to "+ofToString(server.getClientIP(i)) <<endl;
                 }
             }
         }
@@ -683,3 +633,28 @@ void ofApp::audioOut( float * output, int bufferSize, int nChannels ) {
     //    }
     
 }
+
+//--------------------------------------------------------------
+void ofApp::soundChange(string name, int index, float value) {
+    
+    if(name == "envelope"){
+        if(disc.isMute(index) == 0){
+            disc.setEnvelope(index, value);
+            sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(index, 0));
+            sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(index, 1));
+            sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(index, 2));
+            sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(index, 3));
+        }
+        else{
+            disc.setEnvelope(index, 0);
+            sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(index, 0));
+            sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(index, 1));
+            sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(index, 2));
+            sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(index, 3));
+        }
+    }
+    
+    sound.synth.setParameter(name+ofToString(index), value);
+    
+}
+

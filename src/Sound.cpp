@@ -44,7 +44,7 @@ void Sound::setup(Disc* disc){
         ControlGenerator pulse = ControlPulse().length(pulseLength).input(metronome);
         
         float envelopeCoeff = ofMap(disc->getDensity(i), 1, 30, .1, 10);
-        ControlGenerator envelope = synth.addParameter("envelope"+ofToString(i), envelopeCoeff);
+        ControlGenerator envelope = synth.addParameter("envelopeWidth"+ofToString(i), envelopeCoeff);
         ControlGenerator attack = synth.addParameter("attack"+ofToString(i),disc->getEnvelope(i, 0));
         ControlGenerator decay = synth.addParameter("decay"+ofToString(i),disc->getEnvelope(i, 1));
         ControlGenerator sustain = synth.addParameter("sustain"+ofToString(i),disc->getEnvelope(i, 2));

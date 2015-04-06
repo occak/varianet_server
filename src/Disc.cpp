@@ -126,14 +126,26 @@ int Disc::getDiscIndex() const{
 }
 //----------------------------------
 
+int Disc::setDiscIndex(int value){
+    
+    return discIndex = value;
+}
+//----------------------------------
+
 float Disc::getRadius(int index) const{
     
-    if ( index == -1) return 10; // '0 point'
-    return radii[index];
+    if ( index == -1) return origin;
+    else return radii[index];
 }
 //----------------------------------
 
 float Disc::setRadius(int index, float size){
+    
+    if ( index != -1) return radii[index] = size;
+}
+//----------------------------------
+
+float Disc::setThickness(int index, float size){
     
     float change = size - (radii[index]-radii[index-1]); // change in the difference of size between the inner circle
     for (int i = index; i < getDiscIndex(); i++) {
@@ -142,7 +154,6 @@ float Disc::setRadius(int index, float size){
     return radii[index];
 }
 //----------------------------------
-
 int Disc::getDensity(int index) const{
     
     return density[index];

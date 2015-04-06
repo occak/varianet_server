@@ -30,9 +30,11 @@ class Disc{
     //getter&setter functions
     
     int getDiscIndex() const;
+    int setDiscIndex(int value);
     
     float getRadius(int index) const;
     float setRadius(int index, float size);
+    float setThickness(int index, float size);
     
     int getDensity(int index) const;
     int setDensity(int index, int newDensity);
@@ -64,6 +66,7 @@ class Disc{
     int isMoving(int index) const;
     int toggleMoving(int index);
     
+    float origin = 10;
     int selected = -1;
     vector<int> resetPerlin;
     
