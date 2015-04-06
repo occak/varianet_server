@@ -153,6 +153,10 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
             
             //sound
             soundChange("envelope", i, 0);
+            
+            //send to all clients
+            string change = "texture//"+ ofToString(i)+": "+ ofToString(disc.getTexture(i));
+            server.sendToAll(change);
         }
         else if(e.getName() == "line"){
             ofxUIToggle *toggle = e.getToggle();
@@ -175,6 +179,10 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
             //sound
             soundChange("envelope", i, 1);
             
+            //send to all clients
+            string change = "texture//"+ ofToString(i)+": "+ ofToString(disc.getTexture(i));
+            server.sendToAll(change);
+            
         }
         else if(e.getName() == "tri"){
             ofxUIToggle *toggle = e.getToggle();
@@ -196,6 +204,10 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
             
             //sound
             soundChange("envelope", i, 2);
+            
+            //send to all clients
+            string change = "texture//"+ ofToString(i)+": "+ ofToString(disc.getTexture(i));
+            server.sendToAll(change);
         }
         else if(e.getName() == "saw"){
             ofxUIToggle *toggle = e.getToggle();
@@ -217,6 +229,10 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
             
             //sound
             soundChange("envelope", i, 3);
+            
+            //send to all clients
+            string change = "texture//"+ ofToString(i)+": "+ ofToString(disc.getTexture(i));
+            server.sendToAll(change);
         }
         else if(e.getName() == "rect"){
             ofxUIToggle *toggle = e.getToggle();
@@ -237,7 +253,12 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
             else toggle->setValue(true);
             
             //sound
-            soundChange("envelope", i, 4);        }
+            soundChange("envelope", i, 4);
+        
+            //send to all clients
+            string change = "texture//"+ ofToString(i)+": "+ ofToString(disc.getTexture(i));
+            server.sendToAll(change);
+        }
     }
 }
 
@@ -330,8 +351,19 @@ void ofApp::draw(){
 void ofApp::keyPressed(int key){
     
     if(key == ' ') groove.turn = !groove.turn;
-    if(key == 'p') disc.toggleMoving(disc.selected);
-    if(key == 'o') disc.resetPerlin[disc.selected] = 1;
+    if(key == 'p') {
+        disc.toggleMoving(disc.selected);
+        
+        string change = "perlin//"+ofToString(disc.selected)+": "+ofToString(disc.isMoving(disc.selected));
+        server.sendToAll(change);
+        
+    }
+    if(key == 'o') {
+        disc.resetPerlin[disc.selected] = 1;
+        string change = "resetPerlin//"+ofToString(disc.selected)+": "+ofToString(disc.resetPerlin[disc.selected]);
+        server.sendToAll(change);
+        
+    }
     if(key == '[') {
         for(int i = 0; i<disc.getDiscIndex(); i++){
             if (disc.isMoving(i) == 1) continue;
