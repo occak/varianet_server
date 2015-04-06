@@ -86,11 +86,18 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
             
             if(disc.getLife()>0){
                 rotationChanged = true;
-                disc.setRotationSpeed(i, (slider->getScaledValue()-(disc.getRotationSpeed(i)+disc.getRotationSpeed(i-1))));
+                float newRotation = (slider->getScaledValue())-(disc.getRotationSpeed(i)+disc.getRotationSpeed(i-1));
+                disc.setRotationSpeed(i, newRotation);
                 //change sound
-                float netSpeed = abs(abs(disc.getRotationSpeed(disc.selected))-abs(disc.getRotationSpeed(disc.selected-1)));
+                float netSpeed = abs(abs(disc.getRotationSpeed(i))-abs(disc.getRotationSpeed(i-1)));
                 float beat = ofMap(netSpeed, 0, 10, 0, 1000);
-                soundChange("bpm", disc.selected, beat);
+                soundChange("bpm", i, beat);
+                
+                //send to all clients
+                string change = "rotation//"+ ofToString(i)+": "+
+                ofToString(newRotation);
+                server.sendToAll(change);
+                cout<< change <<endl;
             }
         }
         else if(e.getName() == "radius" + ofToString(i+1)){
@@ -99,8 +106,12 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
             if(disc.getLife() > 0) {
                 radiusChanged = true;
                 disc.setThickness(i, slider->getScaledValue());
-                float q = ofMap(disc.getRadius(disc.selected)-disc.getRadius(disc.selected-1), 15, 100, 10, 0);
-                soundChange("q", disc.selected, q);
+                float q = ofMap(disc.getRadius(i)-disc.getRadius(i-1), 15, 100, 10, 0);
+                soundChange("q", i, q);
+                
+                //send to all clients
+                string change = "radius//"+ofToString(i)+": "+ofToString(slider->getScaledValue());
+                server.sendToAll(change);
             }
         }
         else if(e.getName() == "density" + ofToString(i+1)){
@@ -110,8 +121,8 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
                 disc.setDensity(i, slider->getScaledValue());
                 float envelopeCoeff = ofMap(disc.getDensity(i), 1, 30, 1, 5);
                 float pulseRatio = ofMap(disc.getDensity(i), 1, 30, 0.001, 1);
-                soundChange("envelopeWidth", disc.selected, envelopeCoeff);
-                soundChange("pulseLength", disc.selected, pulseRatio);
+                soundChange("envelopeWidth", i, envelopeCoeff);
+                soundChange("pulseLength", i, pulseRatio);
                 
             }
         }
@@ -132,6 +143,9 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
                 toggle4->setValue(false);
             }
             else toggle->setValue(true);
+            
+            //sound
+            soundChange("envelope", i, 0);
         }
         else if(e.getName() == "line"){
             ofxUIToggle *toggle = e.getToggle();
@@ -152,7 +166,7 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
             else toggle->setValue(true);
             
             //sound
-            soundChange("envelope", disc.selected, 1);
+            soundChange("envelope", i, 1);
             
         }
         else if(e.getName() == "tri"){
@@ -174,7 +188,7 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
             else toggle->setValue(true);
             
             //sound
-            soundChange("envelope", disc.selected, 2);
+            soundChange("envelope", i, 2);
         }
         else if(e.getName() == "saw"){
             ofxUIToggle *toggle = e.getToggle();
@@ -195,7 +209,7 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
             else toggle->setValue(true);
             
             //sound
-            soundChange("envelope", disc.selected, 3);
+            soundChange("envelope", i, 3);
         }
         else if(e.getName() == "rect"){
             ofxUIToggle *toggle = e.getToggle();
@@ -216,7 +230,7 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
             else toggle->setValue(true);
             
             //sound
-            soundChange("envelope", disc.selected, 4);        }
+            soundChange("envelope", i, 4);        }
     }
 }
 
@@ -229,10 +243,12 @@ void ofApp::update(){
     groove.update();
     
     for(int i = 0; i< disc.getDiscIndex(); i++){
+        
         float amountFreq = ofMap(abs(disc.getRotationSpeed(i)), 0, 10, 0, 5000);
-        sound.synth.setParameter("amountFreq"+ofToString(i), amountFreq);
         float amountMod = ofMap(abs(disc.getPosition(i)), 0, 50, 0, 5000);
-        sound.synth.setParameter("amountMod"+ofToString(i), amountMod);
+        
+        soundChange("amountFreq", i, amountFreq);
+        soundChange("amountMod", i, amountMod);
     }
     
     sound.update();
@@ -259,7 +275,13 @@ void ofApp::update(){
                         state += "mute"+ofToString(j)+": " + ofToString(disc.isMute(j)) + "//";
                         state += "perlin"+ofToString(j)+": " + ofToString(disc.isMoving(j)) + "//";
                     }
-                    server.send(i, state);  //send current values to client
+                    
+                    state += "scale//";
+                    for(int j = 0; j < sound.scale.size(); j++){
+                        state += ofToString(sound.scale[i])+": ";
+                    }
+                    
+                    server.send(i, state);  //send current state to new client
                     cout<< "sent to "+ofToString(server.getClientIP(i)) <<endl;
                 }
             }
@@ -315,7 +337,7 @@ void ofApp::keyPressed(int key){
         }
     }
     
-    if(key == 'j' && disc.selected != -1) {
+    if(key == 'a' && disc.selected != -1) {
         
         if(disc.getLife() > 0) {
             disc.setLife(costRotation);     // reduce life
@@ -329,11 +351,11 @@ void ofApp::keyPressed(int key){
             //change sound
             float netSpeed = abs(abs(disc.getRotationSpeed(disc.selected))-abs(disc.getRotationSpeed(disc.selected-1)));
             float beat = ofMap(netSpeed, 0, 10, 0, 1000);
-            sound.synth.setParameter("bpm"+ofToString(disc.selected), beat);
+            soundChange("bpm", disc.selected, beat);
         }
     }
     
-    if(key == 'l' && disc.selected != -1 ) {
+    if(key == 'd' && disc.selected != -1 ) {
         
         if(disc.getLife() > 0) {
             disc.setLife(costRotation);     // reduce life
@@ -347,11 +369,11 @@ void ofApp::keyPressed(int key){
             //change sound
             float netSpeed = abs(abs(disc.getRotationSpeed(disc.selected))-abs(disc.getRotationSpeed(disc.selected-1)));
             float beat = ofMap(netSpeed, 0, 10, 0, 1000);
-            sound.synth.setParameter("bpm"+ofToString(disc.selected), beat);
+            soundChange("bpm", disc.selected, beat);
         }
     }
     
-    if(key == 'i'){
+    if(key == 'w'){
         
         if(disc.selected + 1 < disc.getDiscIndex()){
             
@@ -370,7 +392,7 @@ void ofApp::keyPressed(int key){
         }
     }
     
-    if(key == 'k'){
+    if(key == 's'){
         if(disc.selected - 1 > -1){
             disc.selected--;
             for(int i = 0; i < disc.getDiscIndex(); i++){
@@ -398,20 +420,7 @@ void ofApp::keyPressed(int key){
         if(disc.getLife() > 0){
             disc.setLife(costTexture);
             disc.setTexture(disc.selected, 1);
-            if(disc.isMute(disc.selected) == 0){
-                disc.setEnvelope(disc.selected, 1);
-                sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 0));
-                sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 1));
-                sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 2));
-                sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 3));
-            }
-            else{
-                disc.setEnvelope(disc.selected, 0);
-                sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 0));
-                sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 1));
-                sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 2));
-                sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 3));
-            }
+            soundChange("envelope", disc.selected, 1);
             
         }
     }
@@ -419,88 +428,45 @@ void ofApp::keyPressed(int key){
         if(disc.getLife() > 0){
             disc.setLife(costTexture);
             disc.setTexture(disc.selected, 2);
-            if(disc.isMute(disc.selected) == 0){
-                disc.setEnvelope(disc.selected, 2);
-                sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 0));
-                sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 1));
-                sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 2));
-                sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 3));
-            }
-            else{
-                disc.setEnvelope(disc.selected, 0);
-                sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 0));
-                sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 1));
-                sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 2));
-                sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 3));
-            }
+            soundChange("envelope", disc.selected, 2);
         }
     }
     if(key == '3') {
         if(disc.getLife() > 0){
             disc.setLife(costTexture);
             disc.setTexture(disc.selected, 3);
-            if(disc.isMute(disc.selected) == 0){
-                disc.setEnvelope(disc.selected, 3);
-                sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 0));
-                sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 1));
-                sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 2));
-                sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 3));
-            }
-            else{
-                disc.setEnvelope(disc.selected, 0);
-                sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 0));
-                sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 1));
-                sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 2));
-                sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 3));
-            }
+            soundChange("envelope", disc.selected, 3);
         }
     }
     if(key == '4') {
         if(disc.getLife() > 0){
             disc.setLife(costTexture);
             disc.setTexture(disc.selected, 4);
-            if(disc.isMute(disc.selected) == 0){
-                disc.setEnvelope(disc.selected, 4);
-                sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 0));
-                sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 1));
-                sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 2));
-                sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 3));
-            }
-            else{
-                disc.setEnvelope(disc.selected, 0);
-                sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 0));
-                sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 1));
-                sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 2));
-                sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 3));
-            }
+            soundChange("envelope", disc.selected, 0);
         }
     }
     if(key == '0') {
         if(disc.getLife() > 0){
             disc.setLife(costTexture);
             disc.setTexture(disc.selected, 0);
-            disc.setEnvelope(disc.selected, 0);
-            sound.synth.setParameter("attack"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 0));
-            sound.synth.setParameter("decay"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 1));
-            sound.synth.setParameter("sustain"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 2));
-            sound.synth.setParameter("release"+ofToString(disc.selected),disc.getEnvelope(disc.selected, 3));
+            soundChange("envelope", disc.selected, 0);
             
             // when texture is set to blank, rotation stops
             disc.setRotationSpeed(disc.selected, -(disc.getRotationSpeed(disc.selected)+disc.getRotationSpeed(disc.selected-1)));
             
             //            disc.setRotation(disc.selected, -disc.getRotationSpeed(disc.selected));
-            sound.synth.setParameter("bpm"+ofToString(disc.selected), 0);
+            soundChange("bpm", disc.selected, 0);
         }
     }
     if(key == 'f') {
         fullScreen = !fullScreen;
         ofSetFullscreen(fullScreen);
     }
-    if(key == 'w' && disc.selected != -1 ) {
+    if(key == 'q' && disc.selected != -1 ) {
         disc.setPosition(disc.selected, disc.getPosition(disc.selected)+1);
         
     }
-    if(key == 's' && disc.selected != -1 ) {
+    if(key == 'e' && disc.selected != -1 ) {
         disc.setPosition(disc.selected, disc.getPosition(disc.selected)-1);
         
     }
@@ -508,20 +474,13 @@ void ofApp::keyPressed(int key){
         if(disc.getLife() > 0){
             disc.setLife(costMute);
             if(disc.isMute(disc.selected) == 0) {
-                disc.toggleMute(disc.selected);
-                disc.setEnvelope(disc.selected, 0);
-                sound.synth.setParameter("attack"+ofToString(disc.selected), disc.getEnvelope(disc.selected, 0));
-                sound.synth.setParameter("decay"+ofToString(disc.selected), disc.getEnvelope(disc.selected, 1));
-                sound.synth.setParameter("sustain"+ofToString(disc.selected), disc.getEnvelope(disc.selected, 2));
-                sound.synth.setParameter("release"+ofToString(disc.selected), disc.getEnvelope(disc.selected, 3));
+                disc.toggleMute(disc.selected); //mute on
+                soundChange("envelope", disc.selected, 0);
             }
             else{
-                disc.toggleMute(disc.selected);
+                disc.toggleMute(disc.selected); //mute off
                 disc.setEnvelope(disc.selected, disc.getTexture(disc.selected));
-                sound.synth.setParameter("attack"+ofToString(disc.selected), disc.getEnvelope(disc.selected, 0));
-                sound.synth.setParameter("decay"+ofToString(disc.selected), disc.getEnvelope(disc.selected, 1));
-                sound.synth.setParameter("sustain"+ofToString(disc.selected), disc.getEnvelope(disc.selected, 2));
-                sound.synth.setParameter("release"+ofToString(disc.selected), disc.getEnvelope(disc.selected, 3));
+                soundChange("envelope", disc.selected, disc.getTexture(disc.selected));
             }
         }
     }
@@ -654,7 +613,7 @@ void ofApp::soundChange(string name, int index, float value) {
         }
     }
     
-    sound.synth.setParameter(name+ofToString(index), value);
+    else sound.synth.setParameter(name+ofToString(index), value);
     
 }
 

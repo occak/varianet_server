@@ -16,8 +16,6 @@ void Sound::setup(Disc* disc){
     // Tonic Synth setup
     ///////////////////////
     
-    
-    vector<float> scale;
     scale.push_back(ofRandom(25));
     scale.push_back(ofRandom(25));
     scale.push_back(ofRandom(25));
