@@ -18,7 +18,7 @@ void ofApp::setup(){
     ofBackground(255);
     
     //set up network
-    server.setup(10001);
+    server.setup(10002);
     server.setMessageDelimiter("varianet");
     
     // set up values of objects
@@ -86,18 +86,17 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
             
             if(disc.getLife()>0){
                 rotationChanged = true;
-                float newRotation = (slider->getScaledValue())-(disc.getRotationSpeed(i)+disc.getRotationSpeed(i-1));
+                float newRotation = slider->getScaledValue()-(disc.getRotationSpeed(i)+disc.getRotationSpeed(i-1));
                 disc.setRotationSpeed(i, newRotation);
+                
                 //change sound
                 float netSpeed = abs(abs(disc.getRotationSpeed(i))-abs(disc.getRotationSpeed(i-1)));
                 float beat = ofMap(netSpeed, 0, 10, 0, 1000);
                 soundChange("bpm", i, beat);
                 
                 //send to all clients
-                string change = "rotation//"+ ofToString(i)+": "+
-                ofToString(newRotation);
+                string change = "rotation//"+ ofToString(i)+": "+ ofToString(newRotation);
                 server.sendToAll(change);
-                cout<< change <<endl;
             }
         }
         else if(e.getName() == "radius" + ofToString(i+1)){
@@ -106,6 +105,8 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
             if(disc.getLife() > 0) {
                 radiusChanged = true;
                 disc.setThickness(i, slider->getScaledValue());
+                
+                //change sound
                 float q = ofMap(disc.getRadius(i)-disc.getRadius(i-1), 15, 100, 10, 0);
                 soundChange("q", i, q);
                 
@@ -119,10 +120,16 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
             if(disc.getLife() > 0) {
                 densityChanged = true;
                 disc.setDensity(i, slider->getScaledValue());
+                
+                //change sound
                 float envelopeCoeff = ofMap(disc.getDensity(i), 1, 30, 1, 5);
                 float pulseRatio = ofMap(disc.getDensity(i), 1, 30, 0.001, 1);
                 soundChange("envelopeWidth", i, envelopeCoeff);
                 soundChange("pulseLength", i, pulseRatio);
+                
+                //send to all clients
+                string change = "density//"+ ofToString(i)+": "+ ofToString(disc.getDensity(i));
+                server.sendToAll(change);
                 
             }
         }
@@ -479,18 +486,13 @@ void ofApp::keyPressed(int key){
             }
             else{
                 disc.toggleMute(disc.selected); //mute off
-                disc.setEnvelope(disc.selected, disc.getTexture(disc.selected));
                 soundChange("envelope", disc.selected, disc.getTexture(disc.selected));
             }
+            string change = "mute//"+ofToString(disc.selected);
+            server.sendToAll(change);
         }
     }
-    
-    
-    
 }
-
-
-
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
