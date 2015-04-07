@@ -34,6 +34,8 @@ public:
     
     vector<ofMesh> mesh;
     
+    ofColor player;
+    
 };
 
 

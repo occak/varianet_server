@@ -3,10 +3,10 @@
 /*
  texture patterns can be randomized
  
- what property has what audible consequence?
- UI?
- 
- send all disc values to client when initialized
+ colors for users:
+ 161,24,87 - purple
+ 255,153,0 - orange
+ 50,153,187 - blue
  
  */
 
@@ -15,7 +15,7 @@
 void ofApp::setup(){
     
     ofSetVerticalSync(true);
-    ofBackground(255);
+    //    ofBackground(255);
     
     //set up network
     server.setup(10002);
@@ -63,11 +63,11 @@ void ofApp::setup(){
     sound.setup(&disc);
     
     // set up game costs
-    costRadius = .1;
-    costDensity = .1;
+    costRadius = 1;
+    costDensity = 1;
     costTexture = 1;
-    costRotation = .1;
-    costMute = .5;
+    costRotation = 1;
+    costMute = 5;
 }
 //--------------------------------------------------------------
 void ofApp::exit(){
@@ -254,7 +254,7 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
             
             //sound
             soundChange("envelope", i, 4);
-        
+            
             //send to all clients
             string change = "texture//"+ ofToString(i)+": "+ ofToString(disc.getTexture(i));
             server.sendToAll(change);
@@ -268,6 +268,8 @@ void ofApp::update(){
     
     
     disc.update();
+    
+    
     groove.update();
     
     for(int i = 0; i< disc.getDiscIndex(); i++){
@@ -277,50 +279,51 @@ void ofApp::update(){
         
         soundChange("amountFreq", i, amountFreq);
         soundChange("amountMod", i, amountMod);
-    }
-    
-    sound.update();
-    
-    for ( int i = 0; i < server.getLastID(); i++ ) {
-        if(server.isClientConnected(i)) {
-            string str = server.receive(i);
-            if(str.length()>0){
-                received = ofSplitString(str, "//");
-                title = received[0];
-                
-                if (title == "hello") {
-                    string state;   //prepare to send the current state of the server
-                    state += "state//";
-                    state += "discIndex: " + ofToString(disc.getDiscIndex()) + "//";
-                    for(int j = 0; j < disc.getDiscIndex(); j++){
-                        state += "radius"+ofToString(j)+": " + ofToString(disc.getRadius(j)) + "//";
-                        state += "density"+ofToString(j)+": " + ofToString(disc.getDensity(j)) + "//";
-                        state += "rotation"+ofToString(j)+": " + ofToString(disc.getRotation(j)) + "//";
-                        state += "rotationSpeed"+ofToString(j)+": " + ofToString(disc.getRotationSpeed(j)) + "//";
-                        state += "texture"+ofToString(j)+": " + ofToString(disc.getTexture(j)) + "//";
-                        state += "zPosition"+ofToString(j)+": " + ofToString(disc.getPosition(j)) + "//";
-                        state += "posOffset"+ofToString(j)+": " + ofToString(disc.getPosOffset(j)) + "//";
-                        state += "mute"+ofToString(j)+": " + ofToString(disc.isMute(j)) + "//";
-                        state += "perlin"+ofToString(j)+": " + ofToString(disc.isMoving(j)) + "//";
-                    }
+        
+        sound.update();
+        
+        for ( int i = 0; i < server.getLastID(); i++ ) {
+            if(server.isClientConnected(i)) {
+                string str = server.receive(i);
+                if(str.length()>0){
+                    received = ofSplitString(str, "//");
+                    title = received[0];
                     
-                    state += "scale//";
-                    for(int j = 0; j < sound.scale.size(); j++){
-                        state += ofToString(sound.scale[i])+": ";
+                    if (title == "hello") {
+                        string state;   //prepare to send the current state of the server
+                        state += "state//";
+                        state += "discIndex: " + ofToString(disc.getDiscIndex()) + "//";
+                        for(int j = 0; j < disc.getDiscIndex(); j++){
+                            state += "radius"+ofToString(j)+": " + ofToString(disc.getRadius(j)) + "//";
+                            state += "density"+ofToString(j)+": " + ofToString(disc.getDensity(j)) + "//";
+                            state += "rotation"+ofToString(j)+": " + ofToString(disc.getRotation(j)) + "//";
+                            state += "rotationSpeed"+ofToString(j)+": " + ofToString(disc.getRotationSpeed(j)) + "//";
+                            state += "texture"+ofToString(j)+": " + ofToString(disc.getTexture(j)) + "//";
+                            state += "zPosition"+ofToString(j)+": " + ofToString(disc.getPosition(j)) + "//";
+                            state += "posOffset"+ofToString(j)+": " + ofToString(disc.getPosOffset(j)) + "//";
+                            state += "mute"+ofToString(j)+": " + ofToString(disc.isMute(j)) + "//";
+                            state += "perlin"+ofToString(j)+": " + ofToString(disc.isMoving(j)) + "//";
+                        }
+                        
+                        state += "scale//";
+                        for(int j = 0; j < sound.scale.size(); j++){
+                            state += ofToString(sound.scale[i])+": ";
+                        }
+                        
+                        server.send(i, state);  //send current state to new client
+                        cout<< "sent to "+ofToString(server.getClientIP(i)) <<endl;
                     }
-                    
-                    server.send(i, state);  //send current state to new client
-                    cout<< "sent to "+ofToString(server.getClientIP(i)) <<endl;
                 }
+                
             }
         }
     }
     
-    
-    
 }
 //--------------------------------------------------------------
 void ofApp::draw(){
+    
+    ofBackgroundGradient(255, 233);
     
     glEnable(GL_DEPTH_TEST);
     
@@ -332,13 +335,13 @@ void ofApp::draw(){
     groove.draw();
     cam.end();
     
-    ofSetColor(ofColor::gray);
-    ofNoFill();
-    ofRectRounded(groove.lifeBarFrame, 5);
+    //    ofSetColor(ofColor::gray);
+    //    ofNoFill();
+    //    ofRectRounded(groove.lifeBarFrame, 5);
     
-    ofSetColor(ofColor::darkGray);
+    ofSetColor(groove.player);
     ofFill();
-    ofRectRounded(groove.lifeBar, 3);
+    ofRect(groove.lifeBar);
     
     ofPopMatrix();
     
