@@ -252,31 +252,31 @@ float Disc::setEnvelope(int index, int type) {
             break;
             
         case 1:         // texture 1 - click
-            attack = 0.001;
-            decay = 0.001;
+            attack = 0.005;
+            decay = 0.005;
             sustain = 0;
             release = 0;
             break;
             
         case 2:         // texture 2 - triangle
             attack = 0.05;
-            decay = 0;
+            decay = 0.05;
             sustain = 0;
             release = 0.05;
             break;
             
         case 3:         // texture 3 - note
-            attack = 0.001;
-            decay = 0.1;
+            attack = 0.005;
+            decay = 0.5;
             sustain = 0;
             release = 0;
             break;
             
         case 4:         // texture 4 - rect
-            attack = 0;
+            attack = 0.001;
             decay = 0;
             sustain = 0.05;
-            release = 0;
+            release = 0.001;
             break;
             
         default:

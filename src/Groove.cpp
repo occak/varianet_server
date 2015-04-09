@@ -4,7 +4,14 @@
 //
 //  Created by cemcakmak on 26/02/15.
 //
-//
+/*
+ 
+ colors for users:
+ 161,24,87 - purple
+ 255,153,0 - orange
+ 50,153,187 - blue
+ 
+ */
 
 #include "Groove.h"
 
@@ -49,7 +56,7 @@ void Groove::setup(Disc* disc){
         }
     }
     
-    player.set(161,24,87);
+    player.set(255,153,0);
     
     // life bar & life
     lifeBarFrame.x = ofGetWidth()/2-42.5;

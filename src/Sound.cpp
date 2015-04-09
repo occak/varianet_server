@@ -76,7 +76,7 @@ void Sound::setup(Disc* disc){
         Generator reverb = Reverb().input(filter).stereoWidth(1).wetLevel(1);
         Generator limiter = Limiter().input(filter);
         
-        master = master + limiter;
+        master = master + filter;
     }
     
     Generator reverb = Reverb().input(master).stereoWidth(1).wetLevel(.3);
