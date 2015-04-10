@@ -85,7 +85,6 @@ void Disc::update(){
         // Combine all of those parameters together, and you've got some nice control over your noise
         
         position += (ofSignedNoise(time*timeScale+timeOffset)) * displacementScale;
-        
 
         //update groove position
         setPosition(i, position);
@@ -189,8 +188,8 @@ float Disc::getRotationSpeed(int index) const{
 
 float Disc::setRotationSpeed(int index, float newSpeed){
 
-    rotationSpeed[index+1] -= newSpeed; //outer disc rotates relative to the inner disc
-    return rotationSpeed[index] += newSpeed;
+    rotationSpeed[index+1] -= newSpeed-rotationSpeed[index]; //outer disc rotates relative to the inner disc
+    return rotationSpeed[index] = newSpeed;
 
 }
 //----------------------------------

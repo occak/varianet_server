@@ -21,6 +21,10 @@ void ofApp::setup(){
     server.setup(10002);
     server.setMessageDelimiter("varianet");
     
+    sender.Create();
+    sender.Connect("127.0.0.1", 10003);
+    sender.SetNonBlocking(true);
+    
     // set up values of objects
     disc.setup();
     groove.setup(&disc);
@@ -84,10 +88,10 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
         if(e.getName() == "rotation" + ofToString(i+1)){
             ofxUISlider *slider = e.getSlider();
             
-            if(disc.getLife()>0){
+            if(disc.getLife()>0){ 
                 rotationChanged = true;
-                float newRotation = slider->getScaledValue()-(disc.getRotationSpeed(i)+disc.getRotationSpeed(i-1));
-                disc.setRotationSpeed(i, newRotation);
+//                float newRotation = slider->getScaledValue()-(disc.getRotationSpeed(i)+disc.getRotationSpeed(i-1));
+                disc.setRotationSpeed(i, slider->getScaledValue()-disc.getRotationSpeed(i-1));
                 
                 //change sound
                 float netSpeed = abs(abs(disc.getRotationSpeed(i))-abs(disc.getRotationSpeed(i-1)));
@@ -152,7 +156,7 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
             else toggle->setValue(true);
             
             //when texture is set to blank, rotation stops
-            disc.setRotationSpeed(disc.selected, -(disc.getRotationSpeed(disc.selected)+disc.getRotationSpeed(disc.selected-1)));
+            disc.setRotationSpeed(disc.selected, 0);
             
             //sound
             soundChange("envelope", i, 0);
@@ -289,7 +293,8 @@ void ofApp::update(){
         
         if (disc.isMoving(i)==1) {
             string change = "zPosition//"+ofToString(i)+": "+ofToString(disc.getPosition(i));
-            server.sendToAll(change);
+            sender.Send(change.c_str(), change.size());
+            cout<< change <<endl;
         }
     }
     
@@ -332,8 +337,8 @@ void ofApp::update(){
                     vector<string> nameValue;
                     nameValue = ofSplitString(received[1], ": ");
                     int index = ofToInt(nameValue[0]);
-                    float newRotation = ofToFloat(nameValue[1])-(disc.getRotationSpeed(index)+disc.getRotationSpeed(index-1));
-                    disc.setRotationSpeed(index, newRotation);
+//                    float newRotation = ofToFloat(nameValue[1])-(disc.getRotationSpeed(index)+disc.getRotationSpeed(index-1));
+                    disc.setRotationSpeed(index, ofToFloat(nameValue[1]));
                     
                     //change sound
                     float netSpeed = abs(abs(disc.getRotationSpeed(index))-abs(disc.getRotationSpeed(index-1)));
@@ -495,7 +500,7 @@ void ofApp::keyPressed(int key){
         
         if(disc.getLife() > 0) {
             disc.setLife(costRotation);     // reduce life
-            disc.setRotationSpeed(disc.selected, +0.05);
+            disc.setRotationSpeed(disc.selected, disc.getRotationSpeed(disc.selected)+0.05);
             
             //update ui
             ofxUICanvas *canvas = static_cast <ofxUICanvas*> (ui[disc.selected]);
@@ -513,12 +518,13 @@ void ofApp::keyPressed(int key){
         
         if(disc.getLife() > 0) {
             disc.setLife(costRotation);     // reduce life
-            disc.setRotationSpeed(disc.selected, -0.05);
+            disc.setRotationSpeed(disc.selected, disc.getRotationSpeed(disc.selected)-0.05);
             
             //update ui (w/ c++ style casting)
             ofxUICanvas *canvas = static_cast <ofxUICanvas*> (ui[disc.selected]);
             ofxUISlider *slider = static_cast <ofxUISlider*> (canvas->getWidget("rotation"+ofToString(disc.selected+1)));
-            slider->setValue(disc.getRotationSpeed(disc.selected));
+            slider->setValue(disc.getRotationSpeed(disc.selected)+disc.getRotationSpeed(disc.selected-1));
+
             
             //change sound
             float netSpeed = abs(abs(disc.getRotationSpeed(disc.selected))-abs(disc.getRotationSpeed(disc.selected-1)));
