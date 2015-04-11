@@ -14,8 +14,7 @@
 #include <stdio.h>
 #include "ofMain.h"
 #include "Disc.h"
-
-
+#include "Player.h"
 
 
 class Groove{
@@ -29,12 +28,13 @@ public:
     ofRectangle lifeBarFrame;
     ofRectangle lifeBar;
     
-    bool turn = true;
+    bool turn = false;
     Disc* disc;
+    Player player;
     
     vector<ofMesh> mesh;
     
-    ofColor player;
+    ofColor playerColor;
     
 };
 

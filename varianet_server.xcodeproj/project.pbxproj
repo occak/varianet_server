@@ -79,6 +79,7 @@
 		BB4A3A16145CD835A96AC7C0 /* ADSR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E4080D90808304BB6ADBDA1 /* ADSR.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
 		BE3D60881AD801A3001E7499 /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE3D60861AD801A3001E7499 /* Player.cpp */; };
+		BE3D60981AD8236F001E7499 /* Perlin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE3D60961AD8236E001E7499 /* Perlin.cpp */; };
 		BED9A40589B3C3818B5CDA19 /* BufferFiller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3331D9C56D08FB10A7627E89 /* BufferFiller.cpp */; };
 		BEE5BA961ACC00DA0063FC38 /* Sound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BEE5BA901ACC00DA0063FC38 /* Sound.cpp */; };
 		BEE5BA971ACC00DA0063FC38 /* Disc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BEE5BA911ACC00DA0063FC38 /* Disc.cpp */; };
@@ -336,6 +337,8 @@
 		BC30920A3770AF92ABC0D364 /* StereoDelay.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = StereoDelay.cpp; path = "../../openFrameworks/of_v0.8.4_osx_release/addons/ofxTonic-master/src/Tonic/StereoDelay.cpp"; sourceTree = SOURCE_ROOT; };
 		BE3D60861AD801A3001E7499 /* Player.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Player.cpp; sourceTree = "<group>"; };
 		BE3D60871AD801A3001E7499 /* Player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
+		BE3D60961AD8236E001E7499 /* Perlin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Perlin.cpp; sourceTree = "<group>"; };
+		BE3D60971AD8236F001E7499 /* Perlin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Perlin.h; sourceTree = "<group>"; };
 		BEE5BA901ACC00DA0063FC38 /* Sound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Sound.cpp; sourceTree = "<group>"; };
 		BEE5BA911ACC00DA0063FC38 /* Disc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Disc.cpp; sourceTree = "<group>"; };
 		BEE5BA921ACC00DA0063FC38 /* Groove.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Groove.cpp; sourceTree = "<group>"; };
@@ -702,6 +705,8 @@
 				BEE5BA941ACC00DA0063FC38 /* Sound.h */,
 				BE3D60861AD801A3001E7499 /* Player.cpp */,
 				BE3D60871AD801A3001E7499 /* Player.h */,
+				BE3D60961AD8236E001E7499 /* Perlin.cpp */,
+				BE3D60971AD8236F001E7499 /* Perlin.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -993,6 +998,7 @@
 				EAC0C1D4A69D5E5BA80B1B0D /* ofxUICircleSlider.cpp in Sources */,
 				EDCA45393BF1B587886DFDB4 /* ofxUIDragableLabelButton.cpp in Sources */,
 				388ADD56955FC29E468333A4 /* ofxUIDropDownList.cpp in Sources */,
+				BE3D60981AD8236F001E7499 /* Perlin.cpp in Sources */,
 				3014214B2349EBF5D0C178FE /* ofxUIEventArgs.cpp in Sources */,
 				FF4689F86EC8CD3F4D0C3D2F /* ofxUIFPS.cpp in Sources */,
 				306C68433A841F2C22A5DED8 /* ofxUIFPSSlider.cpp in Sources */,
@@ -1131,6 +1137,8 @@
 		E4B69B600A3A1757003C02F2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1218,6 +1226,8 @@
 		E4B69B610A3A1757003C02F2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (

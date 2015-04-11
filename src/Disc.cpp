@@ -9,12 +9,16 @@
 #include "Disc.h"
 
 void Disc::setup(){
-
+    
     life = 100;         // initial life value
     
     discIndex = 10;    // 10 discs
     
-
+    //colors for players when they log in
+    playerColor.push_back(ofColor(161,24,87));
+    playerColor.push_back(ofColor(255,153,0));
+    playerColor.push_back(ofColor(50,153,187));
+    
     for(int i = 0; i < discIndex; i++){
         
         // generate radius information of discs
@@ -25,15 +29,15 @@ void Disc::setup(){
         float thisDensity = ofRandom(15.) + 1;
         while ((int) thisDensity == 7 || (int) thisDensity == 11 || (int) thisDensity == 13) {
             thisDensity = ofRandom(15.) + 1;
-//            cout << "recalculating" << endl;
+            //            cout << "recalculating" << endl;
         }
         density.push_back(thisDensity);
-//        cout << (int) thisDensity << endl;
+        //        cout << (int) thisDensity << endl;
         
         // determine their initial rotation angle and speed
         rotation.push_back(0);
         rotationSpeed.push_back(0);
-    
+        
         // determine texture type
         texture.push_back((int) ofRandom(5));
         
@@ -41,6 +45,13 @@ void Disc::setup(){
         zPosition.push_back(0.);
         
         posOffset.push_back(ofRandom(0,100000));
+        
+        //seed random numbers to perlin function
+        seed.push_back(static_cast<unsigned int>(ofRandom(256)));
+        
+        //z-motion is off
+        perlin.push_back(0);
+        resetPerlin.push_back(0);
         
         //sound
         vector<float> adsr;
@@ -50,11 +61,13 @@ void Disc::setup(){
         //muting, all initially false
         mute.push_back(0);
         
-        //z-motion is off
-        perlin.push_back(0);
-        resetPerlin.push_back(0);
     }
-   
+    
+    //    for (int i = 0; i <100; i++) {
+    //        float n = Noise(i);
+    //        cout<< n <<endl;
+    //    }
+    
 }
 
 void Disc::update(){
@@ -62,33 +75,36 @@ void Disc::update(){
     for(int i = 0; i < discIndex; i++){
         
         
-    if(resetPerlin[i] == 1){
-        setPosition(i, 0);
-        perlin[i] = 0;
+        if(resetPerlin[i] == 1){
+            setPosition(i, 0);
+            perlin[i] = 0;
         }
         
-    if(perlin[i] == 1){
-        
-        float position = getPosition(i);
-        
-        float time = ofGetElapsedTimef();
-        float timeScale = .1;
-        float displacementScale = 10;
-        float timeOffset = getPosOffset(i);
-        
-        // A typical design pattern for using Perlin noise uses a couple parameters:
-        // ofSignedNoise(time*timeScale+timeOffset)*displacementScale
-        //     ofSignedNoise(time) gives us noise values that change smoothly over time
-        //     ofSignedNoise(time*timeScale) allows us to control the smoothness of our noise (smaller timeScale, smoother values)
-        //     ofSignedNoise(time+timeOffset) allows us to use the same Perlin noise function to control multiple things and have them look as if they are moving independently
-        //     ofSignedNoise(time)*displacementScale allows us to change the bounds of the noise from [-1, 1] to whatever we want
-        // Combine all of those parameters together, and you've got some nice control over your noise
-        
-        position += (ofSignedNoise(time*timeScale+timeOffset)) * displacementScale;
-
-        //update groove position
-        setPosition(i, position);
-        
+        if(perlin[i] == 1){
+            
+            float position = getPosition(i);
+            
+            float time = ofGetElapsedTimef();
+            float timeScale = .1;
+            float displacementScale = 10;
+            float timeOffset = getPosOffset(i);
+            
+            // A typical design pattern for using Perlin noise uses a couple parameters:
+            // ofSignedNoise(time*timeScale+timeOffset)*displacementScale
+            //     ofSignedNoise(time) gives us noise values that change smoothly over time
+            //     ofSignedNoise(time*timeScale) allows us to control the smoothness of our noise (smaller timeScale, smoother values)
+            //     ofSignedNoise(time+timeOffset) allows us to use the same Perlin noise function to control multiple things and have them look as if they are moving independently
+            //     ofSignedNoise(time)*displacementScale allows us to change the bounds of the noise from [-1, 1] to whatever we want
+            // Combine all of those parameters together, and you've got some nice control over your noise
+            
+            position += (ofSignedNoise(time*timeScale+timeOffset)) * displacementScale;
+            
+            //        position += (perlinObject->PerlinNoise_1D(time*timeScale+timeOffset)) * displacementScale;
+            
+            
+            //update groove position
+            setPosition(i, position);
+            
         }
         resetPerlin[i] = 0;
     }
@@ -103,17 +119,17 @@ void Disc::selectDisc(int x, int y){
 
 void Disc::drawTexture(){
     
-
+    
 }
 //----------------------------------
 
 int Disc::getTexture(int index) const{
-  
+    
     return texture[index];
 }
 //----------------------------------
 
-int Disc::setTexture(int index, int type) {
+void Disc::setTexture(int index, int type) {
     
     texture[index] = type;
 }
@@ -125,9 +141,9 @@ int Disc::getDiscIndex() const{
 }
 //----------------------------------
 
-int Disc::setDiscIndex(int value){
+void Disc::setDiscIndex(int value){
     
-    return discIndex = value;
+    discIndex = value;
 }
 //----------------------------------
 
@@ -138,19 +154,24 @@ float Disc::getRadius(int index) const{
 }
 //----------------------------------
 
-float Disc::setRadius(int index, float size){
+void Disc::setRadius(int index, float size){
     
-    if ( index != -1) return radii[index] = size;
+    if ( index != -1) radii[index] = size;
 }
 //----------------------------------
 
-float Disc::setThickness(int index, float size){
+float Disc::getThickness(int index) const{
+    
+    return radii[index]-radii[index-1];
+    
+}
+
+void Disc::setThickness(int index, float size){
     
     float change = size - (radii[index]-radii[index-1]); // change in the difference of size between the inner circle
     for (int i = index; i < getDiscIndex(); i++) {
         radii[i] = radii[i] + change;
     }
-    return radii[index];
 }
 //----------------------------------
 int Disc::getDensity(int index) const{
@@ -159,9 +180,9 @@ int Disc::getDensity(int index) const{
 }
 //----------------------------------
 
-int Disc::setDensity(int index, int newDensity) {
+void Disc::setDensity(int index, int newDensity) {
     
-    return density[index] = newDensity;
+    density[index] = newDensity;
 }
 //----------------------------------
 
@@ -171,26 +192,54 @@ float Disc::getRotation(int index) const{
 }
 //----------------------------------
 
-float Disc::setRotation(int index, float newRotation){
+void Disc::setRotation(int index, float newRotation){
     
     // we need to increase rotate values by an amount of rotationSpeed to draw properly in groove.draw()
     rotation[index] += newRotation;
     if (rotation[index] > 360.) rotation[index] -= 360;
-    return rotation[index];
 }
 //----------------------------------
 
 float Disc::getRotationSpeed(int index) const{
     
     return rotationSpeed[index];
+    
 }
 //----------------------------------
 
-float Disc::setRotationSpeed(int index, float newSpeed){
+void Disc::setRotationSpeed(int index, float addSpeed){
+    
+    rotationSpeed[index+1] -= addSpeed; //outer disc rotates relative to the inner disc
+    return rotationSpeed[index] += addSpeed;
+    
+}
+//----------------------------------
 
-    rotationSpeed[index+1] -= newSpeed-rotationSpeed[index]; //outer disc rotates relative to the inner disc
-    return rotationSpeed[index] = newSpeed;
+float Disc::getNetRotationSpeed(int index) const{
+    
+    if(index != 0){
+        float allBelow = 0;
+        for(int i = 0; i < index; i++){
+            allBelow += rotationSpeed[i];
+        }
+        return rotationSpeed[index]+allBelow;
+    }
+    else return rotationSpeed[0];
+}
+//----------------------------------
 
+void Disc::setNetRotationSpeed(int index, float newSpeed){
+    
+    if(index != 0){
+        float allBelow = 0;
+        for(int i = 0; i < index; i++){
+            allBelow += rotationSpeed[i];
+        }
+        rotationSpeed[index] = newSpeed - allBelow;
+        rotationSpeed[index+1] -= newSpeed - allBelow; //outer disc rotates relative to the inner disc
+    }
+    else rotationSpeed[0] = newSpeed;
+    
 }
 //----------------------------------
 
@@ -200,9 +249,9 @@ float Disc::getPosition(int index) const{
 }
 //----------------------------------
 
-float Disc::setPosition(int index, float newPosition){
+void Disc::setPosition(int index, float newPosition){
     
-    return zPosition[index] = newPosition;
+    zPosition[index] = newPosition;
 }
 
 //----------------------------------
@@ -213,9 +262,9 @@ float Disc::getPosOffset(int index) const{
 }
 //----------------------------------
 
-float Disc::setPosOffset (int index, float newOffset){
+void Disc::setPosOffset (int index, float newOffset){
     
-    return posOffset[index] = newOffset;
+    posOffset[index] = newOffset;
 }
 
 //----------------------------------
@@ -225,21 +274,28 @@ float Disc::getLife() const{
 }
 
 //----------------------------------
-float Disc::setLife(float cost){
+void Disc::setLife(float cost){
     
-    return life -= cost;
+    life -= cost;
+}
+
+//----------------------------------
+ofColor Disc::getColor(int index) const{
+    
+    return playerColor[index];
+    
 }
 
 //----------------------------------
 float Disc::getEnvelope(int index, int section) const{
     
     return envelope[index][section];
-
+    
 }
 
 //----------------------------------
-float Disc::setEnvelope(int index, int type) {
-
+void Disc::setEnvelope(int index, int type) {
+    
     vector <float> adsr;
     float attack, decay, sustain, release;
     switch (type) {
@@ -286,7 +342,7 @@ float Disc::setEnvelope(int index, int type) {
     adsr.push_back(decay);
     adsr.push_back(sustain);
     adsr.push_back(release);
-
+    
     envelope[index] = adsr;
     
 }
@@ -299,11 +355,10 @@ int Disc::isMute(int index) const{
 }
 
 //----------------------------------
-int Disc::toggleMute(int index){
+void Disc::toggleMute(int index){
     
     if(mute[index] == 0) mute[index] = 1;
     else mute[index] = 0;
-    return mute[index];
     
 }
 
@@ -315,11 +370,10 @@ int Disc::isMoving(int index) const{
 }
 
 //----------------------------------
-int Disc::toggleMoving(int index){
+void Disc::toggleMoving(int index){
     
     if(perlin[index] == 0) perlin[index] = 1;
     else perlin[index] = 0;
-    return perlin[index];
     
 }
 

@@ -4,6 +4,7 @@
 #include "ofxUI.h"
 #include "Groove.h"
 #include "Disc.h"
+#include "Player.h"
 #include "Sound.h"
 #include "ofxNetwork.h"
 
@@ -57,9 +58,11 @@ class ofApp : public ofBaseApp{
 private:
     
     bool fullScreen;
+    int playerNum;
     
     Groove groove;
     Disc disc;
+    vector<Player *> players;
     Sound sound;
     
     vector<ofxUICanvas *> ui;

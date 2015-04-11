@@ -11,20 +11,28 @@
 
 #include <stdio.h>
 #include "ofMain.h"
+#include "Disc.h"
 
 class Player{
     
 public:
     
+    void setup();
+    
+    bool isConnected() const;
+    void setConnection(bool connection);
+    
     string getIP() const;
-    string setIP(string IP);
+    void setIP(string newIP);
     
     ofColor getColor() const;
-    ofColor setColor(ofColor color);
+    void setColor(int index);
     
-    float getLife();
-    float setLife(float life);
+    float getLife() const;
+    void setLife(float newLife);
     
+    int getDiscIndex() const;
+    void setDiscIndex(int index);
     
     
 private:
@@ -33,8 +41,9 @@ private:
     ofColor color;
     
     float life;
+    bool connected;
     
-    
+    int discIndex;
     
 };
 

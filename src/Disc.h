@@ -30,45 +30,54 @@ class Disc{
     //getter&setter functions
     
     int getDiscIndex() const;
-    int setDiscIndex(int value);
+    void setDiscIndex(int value);
     
     float getRadius(int index) const;
-    float setRadius(int index, float size);
-    float setThickness(int index, float size);
+    void setRadius(int index, float size);
+    
+    float getThickness(int index) const;
+    void setThickness(int index, float size);
     
     int getDensity(int index) const;
-    int setDensity(int index, int newDensity);
+    void setDensity(int index, int newDensity);
     
     float getRotation(int index) const;
-    float setRotation(int index, float newRotation);
+    void setRotation(int index, float newRotation);
     
+    //for the groove object to draw
     float getRotationSpeed(int index) const;
-    float setRotationSpeed(int index, float addSpeed);
+    void setRotationSpeed(int index, float addSpeed);
+    //for relative speeds
+    float getNetRotationSpeed(int index) const;
+    void setNetRotationSpeed(int index, float addSpeed);
     
     int getTexture(int index) const;
-    int setTexture(int index, int type);
+    void setTexture(int index, int type);
     
     float getPosition(int index) const;
-    float setPosition(int index, float newPosition);
+    void setPosition(int index, float newPosition);
     
     float getPosOffset(int index) const;
-    float setPosOffset(int index, float newOffset);
+    void setPosOffset(int index, float newOffset);
     
     float getLife() const;
-    float setLife(float cost);
+    void setLife(float cost);
+    
+    ofColor getColor(int index) const;
     
     float getEnvelope(int index, int section) const;
-    float setEnvelope(int index, int type);
+    void setEnvelope(int index, int type);
     
     int isMute(int index) const;
-    int toggleMute(int index);
+    void toggleMute(int index);
     
     int isMoving(int index) const;
-    int toggleMoving(int index);
+    void toggleMoving(int index);
     
     float origin = 10;
     int selected = -1;
     vector<int> resetPerlin;
+
     
 private:
     
@@ -87,6 +96,8 @@ private:
     vector<float> zPosition;
     vector<float> posOffset;
     
+    vector<ofColor> playerColor;
+    
     //adsr
     vector< vector <float> > envelope;
     
@@ -95,6 +106,9 @@ private:
     
     // z-motion
     vector<int> perlin;
+    
+    //we will use a different perlin noise so we can give seeds
+    vector<unsigned int> seed;
     
 };
 
