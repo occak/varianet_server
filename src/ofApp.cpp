@@ -60,7 +60,7 @@ void ofApp::setup(){
     //    volume = 0;
     //    ofSoundStreamSetup(2, 0); // 2 out, 0 in
     
-    //    sound.setup(&disc);
+        sound.setup(&disc);
     
     // set up game costs
     costRadius = 1;
@@ -320,10 +320,25 @@ void ofApp::update(){
                         players.push_back(_player);
                         _player->setLife(100);
                         _player->setDiscIndex(-1);
-                        _player->setColor(players.size());
+                        _player->setColorByIndex(players.size());
                     }
                     _player->setConnection(true);
                     
+                    string playerInfo;
+                    playerInfo += "playerInfo//";
+                    playerInfo += "color: " + ofToString(_player->getColor()) + "//";
+                    playerInfo += "life: " + ofToString(_player->getLife()) + "//";
+                    playerInfo += "index: " + ofToString(_player->getDiscIndex()) + "//";
+                    server.send(i, playerInfo);
+                    cout<< playerInfo <<endl;
+                    
+                    string scale;
+                    scale += "scale//";
+                    for(int j = 0; j < sound.scale.size(); j++){
+                        if( j == sound.scale.size()-1 ) scale += ofToString(sound.scale[j]);
+                        else scale += ofToString(sound.scale[j])+": ";
+                    }
+                    server.send(i, scale);
                     
                     
                     string state;   //prepare to send the current state of the server
@@ -339,11 +354,6 @@ void ofApp::update(){
                         state += "posOffset"+ofToString(j)+": " + ofToString(disc.getPosOffset(j)) + "//";
                         state += "mute"+ofToString(j)+": " + ofToString(disc.isMute(j)) + "//";
                         state += "perlin"+ofToString(j)+": " + ofToString(disc.isMoving(j)) + "//";
-                    }
-                    
-                    state += "scale//";
-                    for(int j = 0; j < sound.scale.size(); j++){
-                        state += ofToString(sound.scale[i])+": ";
                     }
                     
                     server.send(i, state);  //send current state to new client

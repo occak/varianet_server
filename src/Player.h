@@ -26,7 +26,8 @@ public:
     void setIP(string newIP);
     
     ofColor getColor() const;
-    void setColor(int index);
+    void setColor(ofColor newColor);
+    void setColorByIndex(int index);
     
     float getLife() const;
     void setLife(float newLife);

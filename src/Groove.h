@@ -30,7 +30,7 @@ public:
     
     bool turn = false;
     Disc* disc;
-    Player player;
+    Player* player;
     
     vector<ofMesh> mesh;
     

@@ -87,3 +87,15 @@ void Sound::update(){
     
     
 }
+
+float Sound::getScale(int index) const{
+
+    return scale[index];
+
+}
+
+void Sound::setScale(int index, float value){
+    
+    scale[index] = value;
+    
+}

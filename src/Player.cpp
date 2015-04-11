@@ -45,7 +45,12 @@ ofColor Player::getColor() const{
     
 }
 
-void Player::setColor(int index){
+void Player::setColor(ofColor newColor){
+    
+    color.set(newColor);
+}
+
+void Player::setColorByIndex(int index){
     // 161,24,87 - purple
     // 255,153,0 - orange
     // 50,153,187 - blue

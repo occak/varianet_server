@@ -24,12 +24,18 @@ public:
     
     void setup(Disc* disc);
     void update();
+    float getScale(int index) const;
+    void setScale(int index, float value);
     vector<float> scale;
     
     Disc* disc;
     
     ofxTonicSynth synth;
     Generator master;
+    
+private:
+    
+
     
 };
 

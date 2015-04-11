@@ -55,7 +55,7 @@
 //        }
 //    }
 //    
-//    player.setColor(disc->getColor(0));
+//    player->setColor(disc->getColor(0));
 //    
 //    // life bar & life
 //    lifeBarFrame.x = ofGetWidth()/2-42.5;
