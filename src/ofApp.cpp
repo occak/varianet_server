@@ -369,9 +369,9 @@ void ofApp::update(){
                     disc.setRotationSpeed(index, ofToFloat(nameValue[1]));
                     
                     //change sound
-                    float netSpeed = abs(disc.getNetRotationSpeed(index));
-                    float beat = ofMap(netSpeed, 0, 10, 0, 1000);
-                    soundChange("bpm", index, beat);
+//                    float netSpeed = abs(disc.getNetRotationSpeed(index));
+//                    float beat = ofMap(netSpeed, 0, 10, 0, 1000);
+//                    soundChange("bpm", index, beat);
                     
                     //update ui
                     //                    ofxUICanvas *canvas = static_cast <ofxUICanvas*> (ui[index]);
@@ -386,8 +386,8 @@ void ofApp::update(){
                     disc.setThickness(index, ofToFloat(nameValue[1]));
                     
                     //change sound
-                    float q = ofMap(disc.getRadius(index)-disc.getRadius(index-1), 15, 100, 10, 0);
-                    soundChange("q", index, q);
+//                    float q = ofMap(disc.getRadius(index)-disc.getRadius(index-1), 15, 100, 10, 0);
+//                    soundChange("q", index, q);
                     
                     //update ui
                     //                    ofxUICanvas *canvas = static_cast<ofxUICanvas*>(ui[index]);
@@ -402,10 +402,10 @@ void ofApp::update(){
                     disc.setDensity(index, ofToFloat(nameValue[1]));
                     
                     //change sound
-                    float envelopeCoeff = ofMap(disc.getDensity(index), 1, 30, 1, 5);
-                    float pulseRatio = ofMap(disc.getDensity(index), 1, 30, 0.001, 1);
-                    soundChange("envelopeWidth", index, envelopeCoeff);
-                    soundChange("pulseLength", index, pulseRatio);
+//                    float envelopeCoeff = ofMap(disc.getDensity(index), 1, 30, 1, 5);
+//                    float pulseRatio = ofMap(disc.getDensity(index), 1, 30, 0.001, 1);
+//                    soundChange("envelopeWidth", index, envelopeCoeff);
+//                    soundChange("pulseLength", index, pulseRatio);
                     
                     //update ui
                     //                    ofxUICanvas *canvas = static_cast<ofxUICanvas*>(ui[index]);
@@ -420,7 +420,7 @@ void ofApp::update(){
                     disc.setTexture(index, ofToInt(nameValue[1]));
                     
                     //change sound
-                    soundChange("envelope", index, ofToInt(nameValue[1]));
+//                    soundChange("envelope", index, ofToInt(nameValue[1]));
                     
                     //update ui
                     //                    ofxUICanvas *canvas = static_cast<ofxUICanvas*>(ui[index]);
@@ -444,8 +444,8 @@ void ofApp::update(){
                 else if (title == "mute"){
                     int thisDisc = ofToInt(received[1]);
                     disc.toggleMute(thisDisc);
-                    if(disc.isMute(thisDisc) == 0) soundChange("envelope", thisDisc, disc.getTexture(thisDisc));
-                    else soundChange("envelope", thisDisc, 0);
+//                    if(disc.isMute(thisDisc) == 0) soundChange("envelope", thisDisc, disc.getTexture(thisDisc));
+//                    else soundChange("envelope", thisDisc, 0);
                 }
                 
                 else if (title == "perlin"){
@@ -459,7 +459,14 @@ void ofApp::update(){
                     disc.resetPerlin[ofToInt(nameValue[0])] = ofToInt(nameValue[1]);
                 }
                 /////////////////////////////////////////////
+                
+                ////////////send to all other clients////////
+                for (int j = 0; j < server.getLastID(); j++) {
+                    if(j == i) continue;
+                    else server.send(j, str);
+                }
             }
+        
         }
     }
 }
