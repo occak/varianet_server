@@ -333,20 +333,16 @@ void ofApp::update(){
                     cout<< playerInfo <<endl;
                     
                     if(players.size() > 1){
-                        string otherPlayers = "otherPlayers//";
-                        int playerNumber = 1;
                         for(int j = 0; j < players.size() - 1; j++){
-                            if( players[j] == _player) continue;
-                            else{
-                                otherPlayers += ofToString(playerNumber) + "//";
+                            if( players[j] != _player){
+                                string otherPlayers = "otherPlayers//";
                                 otherPlayers += "IP: " + ofToString(players[j]->getIP()) + "//";
                                 otherPlayers += "color: " + ofToString(players[j]->getColor()) + "//";
                                 otherPlayers += "life: " + ofToString(players[j]->getLife()) + "//";
                                 otherPlayers += "index: " + ofToString(players[j]->getDiscIndex()) + "//";
+                                server.send(i, otherPlayers);
                             }
-                            playerNumber++;
                         }
-                        server.send(i, otherPlayers);
                     }
                     
                     string scale;
