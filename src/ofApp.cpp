@@ -332,6 +332,17 @@ void ofApp::update(){
                     server.send(i, playerInfo);
                     cout<< playerInfo <<endl;
                     
+                    string newPlayerInfo;
+                    newPlayerInfo += "otherPlayers//";
+                    newPlayerInfo += "IP: " + ofToString(_player->getIP()) + "//";
+                    newPlayerInfo += "color: " + ofToString(_player->getColor()) + "//";
+                    newPlayerInfo += "life: " + ofToString(_player->getLife()) + "//";
+                    newPlayerInfo += "index: " + ofToString(_player->getDiscIndex()) + "//";
+                    for (int j = 0; j < server.getLastID(); j++) {
+                        if(j != i) server.send(j, newPlayerInfo);
+                        else continue;
+                    }
+                    
                     if(players.size() > 1){
                         for(int j = 0; j < players.size() - 1; j++){
                             if( players[j] != _player){
@@ -341,6 +352,7 @@ void ofApp::update(){
                                 otherPlayers += "life: " + ofToString(players[j]->getLife()) + "//";
                                 otherPlayers += "index: " + ofToString(players[j]->getDiscIndex()) + "//";
                                 server.send(i, otherPlayers);
+                                cout<< otherPlayers <<endl;
                             }
                         }
                     }
