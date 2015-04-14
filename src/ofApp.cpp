@@ -326,6 +326,7 @@ void ofApp::update(){
                     
                     string playerInfo;
                     playerInfo += "playerInfo//";
+                    playerInfo += "IP: " + ofToString(_player->getIP()) + "//";
                     playerInfo += "color: " + ofToString(_player->getColor()) + "//";
                     playerInfo += "life: " + ofToString(_player->getLife()) + "//";
                     playerInfo += "index: " + ofToString(_player->getDiscIndex()) + "//";
