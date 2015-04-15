@@ -331,7 +331,6 @@ void ofApp::update(){
                     playerInfo += "life: " + ofToString(_player->getLife()) + "//";
                     playerInfo += "index: " + ofToString(_player->getDiscIndex()) + "//";
                     server.send(i, playerInfo);
-                    cout<< playerInfo <<endl;
                     
                     string newPlayerInfo;
                     newPlayerInfo += "otherPlayers//";
