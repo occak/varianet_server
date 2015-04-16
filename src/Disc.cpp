@@ -354,10 +354,9 @@ int Disc::isMute(int index) const{
 }
 
 //----------------------------------
-void Disc::toggleMute(int index){
+void Disc::setMute(int index, int onOff){
     
-    if(mute[index] == 0) mute[index] = 1;
-    else mute[index] = 0;
+    mute[index] = onOff;
     
 }
 

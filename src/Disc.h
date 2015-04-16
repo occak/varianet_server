@@ -69,7 +69,7 @@ class Disc{
     void setEnvelope(int index, int type);
     
     int isMute(int index) const;
-    void toggleMute(int index);
+    void setMute(int index, int onOff);
     
     int isMoving(int index) const;
     void setMoving(int index, int moving);

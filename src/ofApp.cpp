@@ -466,19 +466,20 @@ void ofApp::update(){
                 }
                 
                 else if (title == "mute"){
-                    int thisDisc = ofToInt(received[1]);
-                    disc.toggleMute(thisDisc);
-                    //                    if(disc.isMute(thisDisc) == 0) soundChange("envelope", thisDisc, disc.getTexture(thisDisc));
-                    //                    else soundChange("envelope", thisDisc, 0);
+                    vector<string> nameValue;
+                    nameValue = ofSplitString(received[1], ": ");
+                    int thisDisc = ofToInt(nameValue[0]);
+                    disc.setMute(thisDisc, ofToInt(nameValue[1]));
                 }
                 
-                else if (title == "movement"){
-                    int thisDisc = ofToInt(received[1]);
-                    if (disc.isMoving(thisDisc) == 0) disc.setMoving(thisDisc, 1);
-                    else disc.setMoving(thisDisc, 0);
+                else if (title == "move"){
+                    vector<string> nameValue;
+                    nameValue = ofSplitString(received[1], ": ");
+                    int thisDisc = ofToInt(nameValue[0]);
+                    disc.setMoving(thisDisc, ofToInt(nameValue[1]));
                 }
                 
-                else if (title == "movementReset"){
+                else if (title == "moveReset"){
                     int thisDisc = ofToInt(received[1]);
                     disc.resetPerlin[thisDisc] = 1;
                 }
@@ -498,7 +499,6 @@ void ofApp::update(){
                 else if (title == "resetAll"){
                     for(int i = 0; i<disc.getDiscIndex(); i++){
                         disc.resetPerlin[i] = 1;
-                        disc.setMoving(i, 0);
                     }
                 }
                 
