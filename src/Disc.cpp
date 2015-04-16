@@ -83,9 +83,8 @@ void Disc::update(){
         if(perlin[i] == 1){
             
             float position = getPosition(i);
-            
             float time = ofGetElapsedTimef();
-            float timeScale = .1;
+            float timeScale = 1;
             float displacementScale = 10;
             float timeOffset = getPosOffset(i);
             
@@ -97,13 +96,13 @@ void Disc::update(){
             //     ofSignedNoise(time)*displacementScale allows us to change the bounds of the noise from [-1, 1] to whatever we want
             // Combine all of those parameters together, and you've got some nice control over your noise
             
-            position += (ofSignedNoise(time*timeScale+timeOffset)) * displacementScale;
-            
+//            position += (sin((time*timeScale)) * displacementScale) - (position/2);
+           
             //        position += (perlinObject->PerlinNoise_1D(time*timeScale+timeOffset)) * displacementScale;
             
             
             //update groove position
-            setPosition(i, position);
+//            setPosition(i, position);
             
         }
         resetPerlin[i] = 0;
@@ -379,7 +378,53 @@ void Disc::toggleMoving(int index){
 
 
 
+float Disc::Noise(int x){
+    
+    int n = x * 57;
+    n = (n<<13) ^ n;
+    
+    return ( 1.0 - ( (n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0);
+    
+//    float random = ofRandom(2)-1.;
+//    return random;
+    
+}
 
+float Disc::SmoothedNoise(float x){
+    
+    return Noise(x)/2  +  Noise(x-1)/4  +  Noise(x+1)/4;
+    
+}
+
+
+float Disc::InterpolatedNoise(float x){
+    
+    int integer_X = static_cast<int>(x);
+    float fractional_X = x - integer_X;
+    
+    float v1 = SmoothedNoise(integer_X);
+    float v2 = SmoothedNoise(integer_X + 1);
+    
+    return ofInterpolateCosine(v1, v2, fractional_X);
+    
+}
+
+float Disc::PerlinNoise_1D(float x){
+    
+    float total = 0;
+    float p = persistence;
+    int n = Number_Of_Octaves - 1;
+    
+    for(int i = 0; i < n; i++){
+        float frequency = pow(2,(float)i);
+        float amplitude = pow(p,(float)i);
+        
+        total = total + InterpolatedNoise(x * frequency) * amplitude;
+        
+    }
+    
+    return total;
+}
 
 
 
