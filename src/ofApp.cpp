@@ -19,7 +19,7 @@ void ofApp::setup(){
     
     //set up network
     server.setup(10002);
-    server.setMessageDelimiter("varianet");
+    server.setMessageDelimiter("ahmet");
     
     // set up values of objects
     disc.setup();
@@ -494,6 +494,18 @@ void ofApp::update(){
                     }
                     
                 }
+                
+                else if (title == "goodbye"){
+                    cout<< str << endl;
+                    for (int j = 0; j < players.size(); j++) {
+                        if(server.getClientIP(i) == players[j]->getIP()) {
+                            players[j]->setConnection(false);
+                            players[j]->setDiscIndex(-1);
+                        }
+                        else continue;
+                }
+                }
+                
                 /////////////////////////////////////////////
                 
                 ////////////send to all other clients////////
@@ -515,7 +527,11 @@ void ofApp::draw(){
     
     ofSetColor(0);
     ofDrawBitmapString("Server Running", 10, 20);
-    ofDrawBitmapString("Number of Players: "+ofToString(players.size()), 10, 40);
+    int online = 0;
+    for(int i = 0; i < players.size(); i++){
+        if(players[i]->isConnected()) online++;
+    }
+    ofDrawBitmapString("Number of Players: "+ofToString(online), 10, 40);
     
     //    glEnable(GL_DEPTH_TEST);
     //
