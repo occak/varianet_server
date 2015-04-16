@@ -63,11 +63,12 @@ void ofApp::setup(){
     sound.setup(&disc);
     
     // set up game costs
-    costRadius = 1;
-    costDensity = 1;
-    costTexture = 1;
-    costRotation = 1;
-    costMute = 5;
+//    costRadius = 1;
+//    costDensity = 1;
+//    costTexture = 1;
+//    costRotation = 1;
+//    costMute = 5;
+//    costMove = 2;
 }
 //--------------------------------------------------------------
 void ofApp::exit(){
@@ -78,9 +79,9 @@ void ofApp::exit(){
     
 }
 //--------------------------------------------------------------
-//void ofApp::guiEvent(ofxUIEventArgs &e)
-//{
-//        for(int i = 0; i < disc.getDiscIndex(); i++){
+void ofApp::guiEvent(ofxUIEventArgs &e)
+{
+        for(int i = 0; i < disc.getDiscIndex(); i++){
 //            if(e.getName() == "rotation" + ofToString(i+1)){
 //                ofxUISlider *slider = e.getSlider();
 //
@@ -267,8 +268,8 @@ void ofApp::exit(){
 //                string change = "texture//"+ ofToString(i)+": "+ ofToString(disc.getTexture(i));
 //                server.sendToAll(change);
 //            }
-//        }
-//}
+        }
+}
 
 //--------------------------------------------------------------
 void ofApp::update(){
@@ -499,6 +500,20 @@ void ofApp::update(){
                 else if (title == "resetAll"){
                     for(int i = 0; i<disc.getDiscIndex(); i++){
                         disc.resetPerlin[i] = 1;
+                    }
+                }
+                
+                else if (title == "zPosition"){
+                    vector<string> nameValue;
+                    nameValue = ofSplitString(received[1], ": ");
+                    disc.setPosition(ofToInt(nameValue[0]), ofToFloat(nameValue[1]));
+                }
+                
+                else if (title == "zPositionAll"){
+                    for (int i = 1; i < received.size()-1; i++) {
+                        vector<string> nameValue;
+                        nameValue = ofSplitString(received[i], ": ");
+                        disc.setPosition(ofToInt(nameValue[0]), ofToFloat(nameValue[1]));
                     }
                 }
                 
