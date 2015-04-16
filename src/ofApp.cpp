@@ -19,7 +19,7 @@ void ofApp::setup(){
     
     //set up network
     server.setup(10002);
-    server.setMessageDelimiter("ahmet");
+    server.setMessageDelimiter("varianet");
     
     // set up values of objects
     disc.setup();
@@ -273,8 +273,6 @@ void ofApp::exit(){
 //--------------------------------------------------------------
 void ofApp::update(){
     
-    
-    
     disc.update();
     
     //    groove.update();
@@ -330,6 +328,7 @@ void ofApp::update(){
                     playerInfo += "life: " + ofToString(_player->getLife()) + "//";
                     playerInfo += "index: " + ofToString(_player->getDiscIndex()) + "//";
                     server.send(i, playerInfo);
+                    cout<< playerInfo <<endl;
                     
                     if(players.size() > 1){
                         for(int j = 0; j < players.size() - 1; j++){
@@ -473,21 +472,42 @@ void ofApp::update(){
                     //                    else soundChange("envelope", thisDisc, 0);
                 }
                 
-                else if (title == "perlin"){
+                else if (title == "movement"){
                     int thisDisc = ofToInt(received[1]);
-                    disc.toggleMoving(thisDisc);
+                    if (disc.isMoving(thisDisc) == 0) disc.setMoving(thisDisc, 1);
+                    else disc.setMoving(thisDisc, 0);
                 }
                 
-                else if (title == "resetPerlin"){
-                    vector<string> nameValue;
-                    nameValue = ofSplitString(received[1], ": ");
-                    disc.resetPerlin[ofToInt(nameValue[0])] = ofToInt(nameValue[1]);
+                else if (title == "movementReset"){
+                    int thisDisc = ofToInt(received[1]);
+                    disc.resetPerlin[thisDisc] = 1;
+                }
+                
+                else if (title == "moveAll"){
+                    for(int i = 0; i<disc.getDiscIndex(); i++){
+                        disc.setMoving(i, 1);
+                    }
+                }
+                
+                else if (title == "stopAll"){
+                    for(int i = 0; i<disc.getDiscIndex(); i++){
+                        disc.setMoving(i, 0);
+                    }
+                }
+                
+                else if (title == "resetAll"){
+                    for(int i = 0; i<disc.getDiscIndex(); i++){
+                        disc.resetPerlin[i] = 1;
+                        disc.setMoving(i, 0);
+                    }
                 }
                 
                 else if (title == "life"){
                     for (int j = 0; j < players.size(); j++) {
                         if(server.getClientIP(i) == players[j]->getIP()) {
-                            players[j]->setLife(ofToFloat(received[1]));
+                            vector<string> nameValue;
+                            nameValue = ofSplitString(received[2], ": ");
+                            players[j]->setLife(ofToFloat(nameValue[1]));
                             break;
                         }
                         else continue;
@@ -561,180 +581,180 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     
-    if(key == ' ') groove.turn = !groove.turn;
-    if(key == 'p') {
-        disc.toggleMoving(disc.selected);
-        
-        string change = "perlin//"+ofToString(disc.selected)+": "+ofToString(disc.isMoving(disc.selected));
-        server.sendToAll(change);
-        
-    }
-    if(key == 'o') {
-        disc.resetPerlin[disc.selected] = 1;
-        string change = "resetPerlin//"+ofToString(disc.selected)+": "+ofToString(disc.resetPerlin[disc.selected]);
-        server.sendToAll(change);
-        
-    }
-    if(key == '[') {
-        for(int i = 0; i<disc.getDiscIndex(); i++){
-            if (disc.isMoving(i) == 1) continue;
-            else disc.toggleMoving(i);
-        }
-    }
-    if(key == ']'){
-        for(int i = 0; i<disc.getDiscIndex(); i++){
-            disc.resetPerlin[i] = 1;
-        }
-    }
-    
-    if(key == 'a' && disc.selected != -1) {
-        
-        if(disc.getLife() > 0) {
-            disc.setLife(costRotation);     // reduce life
-            disc.setRotationSpeed(disc.selected, +0.05);
-            
-            //update ui
-            ofxUICanvas *canvas = static_cast <ofxUICanvas*> (ui[disc.selected]);
-            ofxUISlider *slider = static_cast <ofxUISlider*> (canvas->getWidget("rotation"+ofToString(disc.selected+1)));
-            slider->setValue(disc.getNetRotationSpeed(disc.selected));
-            
-            //change sound
-            float netSpeed = abs(disc.getNetRotationSpeed(disc.selected));
-            float beat = ofMap(netSpeed, 0, 10, 0, 1000);
-            soundChange("bpm", disc.selected, beat);
-        }
-    }
-    
-    if(key == 'd' && disc.selected != -1 ) {
-        
-        if(disc.getLife() > 0) {
-            disc.setLife(costRotation);     // reduce life
-            disc.setRotationSpeed(disc.selected, -0.05);
-            
-            //update ui (w/ c++ style casting)
-            ofxUICanvas *canvas = static_cast <ofxUICanvas*> (ui[disc.selected]);
-            ofxUISlider *slider = static_cast <ofxUISlider*> (canvas->getWidget("rotation"+ofToString(disc.selected+1)));
-            slider->setValue(disc.getNetRotationSpeed(disc.selected));
-            
-            //change sound
-            float netSpeed = abs(disc.getNetRotationSpeed(disc.selected));
-            float beat = ofMap(netSpeed, 0, 10, 0, 1000);
-            soundChange("bpm", disc.selected, beat);
-        }
-    }
-    
-    if(key == 'w'){
-        
-        if(disc.selected + 1 < disc.getDiscIndex()){
-            
-            disc.selected++;
-            for(int i = 0; i < disc.getDiscIndex(); i++){
-                ui[i]->setVisible(false);
-            }
-            ui[disc.selected]->toggleVisible();
-        }
-        else {
-            disc.selected = 0;
-            for(int i = 0; i < disc.getDiscIndex(); i++){
-                ui[i]->setVisible(false);
-            }
-            ui[disc.selected]->toggleVisible();
-        }
-    }
-    
-    if(key == 's'){
-        if(disc.selected - 1 > -1){
-            disc.selected--;
-            for(int i = 0; i < disc.getDiscIndex(); i++){
-                ui[i]->setVisible(false);
-            }
-            ui[disc.selected]->toggleVisible();
-        }
-        else {
-            disc.selected = disc.getDiscIndex()-1;
-            for(int i = 0; i < disc.getDiscIndex(); i++){
-                ui[i]->setVisible(false);
-            }
-            ui[disc.selected]->toggleVisible();
-        }
-    }
-    
-    if(key == OF_KEY_BACKSPACE) {
-        disc.selected = -1;
-        for(int i = 0; i < disc.getDiscIndex(); i++){
-            ui[i]->setVisible(false);
-        }
-    }
-    
-    //    if(key == '1') {
-    //        if(disc.getLife() > 0){
-    //            disc.setLife(costTexture);
-    //            disc.setTexture(disc.selected, 1);
-    //            soundChange("envelope", disc.selected, 1);
-    //
-    //        }
-    //    }
-    //    if(key == '2') {
-    //        if(disc.getLife() > 0){
-    //            disc.setLife(costTexture);
-    //            disc.setTexture(disc.selected, 2);
-    //            soundChange("envelope", disc.selected, 2);
-    //        }
-    //    }
-    //    if(key == '3') {
-    //        if(disc.getLife() > 0){
-    //            disc.setLife(costTexture);
-    //            disc.setTexture(disc.selected, 3);
-    //            soundChange("envelope", disc.selected, 3);
-    //        }
-    //    }
-    //    if(key == '4') {
-    //        if(disc.getLife() > 0){
-    //            disc.setLife(costTexture);
-    //            disc.setTexture(disc.selected, 4);
-    //            soundChange("envelope", disc.selected, 0);
-    //        }
-    //    }
-    //    if(key == '0') {
-    //        if(disc.getLife() > 0){
-    //            disc.setLife(costTexture);
-    //            disc.setTexture(disc.selected, 0);
-    //            soundChange("envelope", disc.selected, 0);
-    //
-    //            // when texture is set to blank, rotation stops
-    //            disc.setRotationSpeed(disc.selected, -(disc.getRotationSpeed(disc.selected)+disc.getRotationSpeed(disc.selected-1)));
-    //
-    //            //            disc.setRotation(disc.selected, -disc.getRotationSpeed(disc.selected));
-    //            soundChange("bpm", disc.selected, 0);
-    //        }
-    //    }
-    if(key == 'f') {
-        fullScreen = !fullScreen;
-        ofSetFullscreen(fullScreen);
-    }
-    if(key == 'q' && disc.selected != -1 ) {
-        disc.setPosition(disc.selected, disc.getPosition(disc.selected)+1);
-        
-    }
-    if(key == 'e' && disc.selected != -1 ) {
-        disc.setPosition(disc.selected, disc.getPosition(disc.selected)-1);
-        
-    }
-    if(key == 'm' && disc.selected != -1 ) {
-        if(disc.getLife() > 0){
-            disc.setLife(costMute);
-            if(disc.isMute(disc.selected) == 0) {
-                disc.toggleMute(disc.selected); //mute on
-                soundChange("envelope", disc.selected, 0);
-            }
-            else{
-                disc.toggleMute(disc.selected); //mute off
-                soundChange("envelope", disc.selected, disc.getTexture(disc.selected));
-            }
-            string change = "mute//"+ofToString(disc.selected);
-            server.sendToAll(change);
-        }
-    }
+//    if(key == ' ') groove.turn = !groove.turn;
+//    if(key == 'p') {
+//        disc.toggleMoving(disc.selected);
+//        
+//        string change = "perlin//"+ofToString(disc.selected)+": "+ofToString(disc.isMoving(disc.selected));
+//        server.sendToAll(change);
+//        
+//    }
+//    if(key == 'o') {
+//        disc.resetPerlin[disc.selected] = 1;
+//        string change = "resetPerlin//"+ofToString(disc.selected)+": "+ofToString(disc.resetPerlin[disc.selected]);
+//        server.sendToAll(change);
+//        
+//    }
+//    if(key == '[') {
+//        for(int i = 0; i<disc.getDiscIndex(); i++){
+//            if (disc.isMoving(i) == 1) continue;
+//            else disc.toggleMoving(i);
+//        }
+//    }
+//    if(key == ']'){
+//        for(int i = 0; i<disc.getDiscIndex(); i++){
+//            disc.resetPerlin[i] = 1;
+//        }
+//    }
+//    
+//    if(key == 'a' && disc.selected != -1) {
+//        
+//        if(disc.getLife() > 0) {
+//            disc.setLife(costRotation);     // reduce life
+//            disc.setRotationSpeed(disc.selected, +0.05);
+//            
+//            //update ui
+//            ofxUICanvas *canvas = static_cast <ofxUICanvas*> (ui[disc.selected]);
+//            ofxUISlider *slider = static_cast <ofxUISlider*> (canvas->getWidget("rotation"+ofToString(disc.selected+1)));
+//            slider->setValue(disc.getNetRotationSpeed(disc.selected));
+//            
+//            //change sound
+//            float netSpeed = abs(disc.getNetRotationSpeed(disc.selected));
+//            float beat = ofMap(netSpeed, 0, 10, 0, 1000);
+//            soundChange("bpm", disc.selected, beat);
+//        }
+//    }
+//    
+//    if(key == 'd' && disc.selected != -1 ) {
+//        
+//        if(disc.getLife() > 0) {
+//            disc.setLife(costRotation);     // reduce life
+//            disc.setRotationSpeed(disc.selected, -0.05);
+//            
+//            //update ui (w/ c++ style casting)
+//            ofxUICanvas *canvas = static_cast <ofxUICanvas*> (ui[disc.selected]);
+//            ofxUISlider *slider = static_cast <ofxUISlider*> (canvas->getWidget("rotation"+ofToString(disc.selected+1)));
+//            slider->setValue(disc.getNetRotationSpeed(disc.selected));
+//            
+//            //change sound
+//            float netSpeed = abs(disc.getNetRotationSpeed(disc.selected));
+//            float beat = ofMap(netSpeed, 0, 10, 0, 1000);
+//            soundChange("bpm", disc.selected, beat);
+//        }
+//    }
+//    
+//    if(key == 'w'){
+//        
+//        if(disc.selected + 1 < disc.getDiscIndex()){
+//            
+//            disc.selected++;
+//            for(int i = 0; i < disc.getDiscIndex(); i++){
+//                ui[i]->setVisible(false);
+//            }
+//            ui[disc.selected]->toggleVisible();
+//        }
+//        else {
+//            disc.selected = 0;
+//            for(int i = 0; i < disc.getDiscIndex(); i++){
+//                ui[i]->setVisible(false);
+//            }
+//            ui[disc.selected]->toggleVisible();
+//        }
+//    }
+//    
+//    if(key == 's'){
+//        if(disc.selected - 1 > -1){
+//            disc.selected--;
+//            for(int i = 0; i < disc.getDiscIndex(); i++){
+//                ui[i]->setVisible(false);
+//            }
+//            ui[disc.selected]->toggleVisible();
+//        }
+//        else {
+//            disc.selected = disc.getDiscIndex()-1;
+//            for(int i = 0; i < disc.getDiscIndex(); i++){
+//                ui[i]->setVisible(false);
+//            }
+//            ui[disc.selected]->toggleVisible();
+//        }
+//    }
+//    
+//    if(key == OF_KEY_BACKSPACE) {
+//        disc.selected = -1;
+//        for(int i = 0; i < disc.getDiscIndex(); i++){
+//            ui[i]->setVisible(false);
+//        }
+//    }
+//    
+//    //    if(key == '1') {
+//    //        if(disc.getLife() > 0){
+//    //            disc.setLife(costTexture);
+//    //            disc.setTexture(disc.selected, 1);
+//    //            soundChange("envelope", disc.selected, 1);
+//    //
+//    //        }
+//    //    }
+//    //    if(key == '2') {
+//    //        if(disc.getLife() > 0){
+//    //            disc.setLife(costTexture);
+//    //            disc.setTexture(disc.selected, 2);
+//    //            soundChange("envelope", disc.selected, 2);
+//    //        }
+//    //    }
+//    //    if(key == '3') {
+//    //        if(disc.getLife() > 0){
+//    //            disc.setLife(costTexture);
+//    //            disc.setTexture(disc.selected, 3);
+//    //            soundChange("envelope", disc.selected, 3);
+//    //        }
+//    //    }
+//    //    if(key == '4') {
+//    //        if(disc.getLife() > 0){
+//    //            disc.setLife(costTexture);
+//    //            disc.setTexture(disc.selected, 4);
+//    //            soundChange("envelope", disc.selected, 0);
+//    //        }
+//    //    }
+//    //    if(key == '0') {
+//    //        if(disc.getLife() > 0){
+//    //            disc.setLife(costTexture);
+//    //            disc.setTexture(disc.selected, 0);
+//    //            soundChange("envelope", disc.selected, 0);
+//    //
+//    //            // when texture is set to blank, rotation stops
+//    //            disc.setRotationSpeed(disc.selected, -(disc.getRotationSpeed(disc.selected)+disc.getRotationSpeed(disc.selected-1)));
+//    //
+//    //            //            disc.setRotation(disc.selected, -disc.getRotationSpeed(disc.selected));
+//    //            soundChange("bpm", disc.selected, 0);
+//    //        }
+//    //    }
+//    if(key == 'f') {
+//        fullScreen = !fullScreen;
+//        ofSetFullscreen(fullScreen);
+//    }
+//    if(key == 'q' && disc.selected != -1 ) {
+//        disc.setPosition(disc.selected, disc.getPosition(disc.selected)+1);
+//        
+//    }
+//    if(key == 'e' && disc.selected != -1 ) {
+//        disc.setPosition(disc.selected, disc.getPosition(disc.selected)-1);
+//        
+//    }
+//    if(key == 'm' && disc.selected != -1 ) {
+//        if(disc.getLife() > 0){
+//            disc.setLife(costMute);
+//            if(disc.isMute(disc.selected) == 0) {
+//                disc.toggleMute(disc.selected); //mute on
+//                soundChange("envelope", disc.selected, 0);
+//            }
+//            else{
+//                disc.toggleMute(disc.selected); //mute off
+//                soundChange("envelope", disc.selected, disc.getTexture(disc.selected));
+//            }
+//            string change = "mute//"+ofToString(disc.selected);
+//            server.sendToAll(change);
+//        }
+//    }
 }
 
 //--------------------------------------------------------------

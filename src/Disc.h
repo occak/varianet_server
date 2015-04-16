@@ -72,27 +72,14 @@ class Disc{
     void toggleMute(int index);
     
     int isMoving(int index) const;
-    void toggleMoving(int index);
+    void setMoving(int index, int moving);
     
     float origin = 10;
     int selected = -1;
     vector<int> resetPerlin;
-
-    
-    //PERLIN FUNCTIONS
-    
-    float Noise(int x);
-    float SmoothedNoise(float x);
-    float InterpolatedNoise(float x);
-    float PerlinNoise_1D(float x);
     
     
 private:
-    
-    //PERLIN VALUES
-    
-    int Number_Of_Octaves = 2;
-    int persistence = 0;
     
     int discIndex;
     float life;
