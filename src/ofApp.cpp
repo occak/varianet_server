@@ -370,15 +370,16 @@ void ofApp::update(){
                     state += "state//";
                     state += "discIndex: " + ofToString(disc.getDiscIndex()) + "//";
                     for(int j = 0; j < disc.getDiscIndex(); j++){
-                        state += "radius"+ofToString(j)+": " + ofToString(disc.getRadius(j)) + "//";
-                        state += "density"+ofToString(j)+": " + ofToString(disc.getDensity(j)) + "//";
-                        state += "rotation"+ofToString(j)+": " + ofToString(disc.getRotation(j)) + "//";
-                        state += "rotationSpeed"+ofToString(j)+": " + ofToString(disc.getNetRotationSpeed(j)) + "//";
-                        state += "texture"+ofToString(j)+": " + ofToString(disc.getTexture(j)) + "//";
-                        state += "zPosition"+ofToString(j)+": " + ofToString(disc.getPosition(j)) + "//";
-                        state += "posOffset"+ofToString(j)+": " + ofToString(disc.getPosOffset(j)) + "//";
-                        state += "mute"+ofToString(j)+": " + ofToString(disc.isMute(j)) + "//";
-                        state += "perlin"+ofToString(j)+": " + ofToString(disc.isMoving(j)) + "//";
+                        state += "radius"+ofToString(j) + ": " + ofToString(disc.getRadius(j)) + "//";
+                        state += "density"+ofToString(j) + ": " + ofToString(disc.getDensity(j)) + "//";
+                        state += "rotation"+ofToString(j) + ": " + ofToString(disc.getRotation(j)) + "//";
+                        state += "rotationSpeed"+ofToString(j) + ": " + ofToString(disc.getNetRotationSpeed(j)) + "//";
+                        state += "texture"+ofToString(j) + ": " + ofToString(disc.getTexture(j)) + "//";
+                        state += "zPosition"+ofToString(j) + ": " + ofToString(disc.getPosition(j)) + "//";
+                        state += "posOffset"+ofToString(j) + ": " + ofToString(disc.getPosOffset(j)) + "//";
+                        state += "counter"+ofToString(j) + ": "+ ofToString(disc.getColor(j)) + "//";
+                        state += "mute"+ofToString(j) + ": " + ofToString(disc.isMute(j)) + "//";
+                        state += "perlin"+ofToString(j) + ": " + ofToString(disc.isMoving(j)) + "//";
                     }
                     
                     server.send(i, state);  //send current state to new client
@@ -515,6 +516,12 @@ void ofApp::update(){
                         nameValue = ofSplitString(received[i], ": ");
                         disc.setPosition(ofToInt(nameValue[0]), ofToFloat(nameValue[1]));
                     }
+                }
+                
+                else if (title == "counter"){
+                    vector<string> nameValue;
+                    nameValue = ofSplitString(received[1], ": ");
+                    disc.setCounter(ofToInt(nameValue[0]), ofToInt(nameValue[1]));
                 }
                 
                 else if (title == "life"){

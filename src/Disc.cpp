@@ -44,10 +44,8 @@ void Disc::setup(){
         // set depths, all zero by default
         zPosition.push_back(0.);
         
-        posOffset.push_back(ofRandom(0,100000));
-        
-        //seed random numbers to perlin function
-        seed.push_back(static_cast<unsigned int>(ofRandom(256)));
+        posOffset.push_back(180 * (int)ofRandom(2));
+        counter.push_back(0);
         
         //z-motion is off
         perlin.push_back(0);
@@ -372,4 +370,11 @@ void Disc::setMoving(int index, int moving){
     
     perlin[index] = moving;
     
+}
+
+int Disc::getCounter(int index) const{
+    return counter[index];
+}
+void Disc::setCounter(int index, int value){
+    counter[index] = value;
 }

@@ -74,6 +74,9 @@ class Disc{
     int isMoving(int index) const;
     void setMoving(int index, int moving);
     
+    int getCounter(int index) const;
+    void setCounter(int index, int value);
+    
     float origin = 10;
     int selected = -1;
     vector<int> resetPerlin;
@@ -106,9 +109,7 @@ private:
     
     // z-motion
     vector<int> perlin;
-    
-    //we will use a different perlin noise so we can give seeds
-    vector<unsigned int> seed;
+    vector<int> counter;
     
 };
 
