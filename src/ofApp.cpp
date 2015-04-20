@@ -357,6 +357,7 @@ void ofApp::update(){
                         else continue;
                     }
                     
+                    
                     string scale;
                     scale += "scale//";
                     for(int j = 0; j < sound.scale.size(); j++){
@@ -364,7 +365,6 @@ void ofApp::update(){
                         else scale += ofToString(sound.scale[j])+": ";
                     }
                     server.send(i, scale);
-                    
                     
                     string state;   //prepare to send the current state of the server
                     state += "state//";
@@ -384,6 +384,7 @@ void ofApp::update(){
                     
                     server.send(i, state);  //send current state to new client
                     cout<< "sent to "+ofToString(server.getClientIP(i)) <<endl;
+                    
                 }
                 /////////////////////////////////////////////
                 

@@ -52,14 +52,12 @@ class ofApp : public ofBaseApp{
     vector<string> received;
     string title;
     
-    ofTextField chat;
-    
 private:
     
     bool fullScreen;
     int playerNum;
     
-    Groove groove;
+//    Groove groove;
     Disc disc;
     vector<Player *> players;
     Sound sound;
