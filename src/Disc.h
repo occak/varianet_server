@@ -13,6 +13,7 @@
 
 #include <stdio.h>
 #include "ofMain.h"
+#include "Perlin.h"
 
 
 
@@ -110,6 +111,7 @@ private:
     // z-motion
     vector<int> perlin;
     vector<int> counter;
+    Perlin perlinz;
     
 };
 

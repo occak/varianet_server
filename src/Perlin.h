@@ -11,22 +11,21 @@
 #ifndef __varianet_server__Perlin__
 #define __varianet_server__Perlin__
 
-#include <stdio.h>
-#include "ofApp.h"
+#include <cmath>
 
 class Perlin{
     
 public:
     
-    float Noise(int x);
-    float SmoothedNoise(float x);
-    float InterpolatedNoise(float x);
-    float PerlinNoise_1D(float x);
+    float Noise(int x, int seed);
+    float SmoothedNoise(float x, int seed);
+    float InterpolatedNoise(float x, int seed);
+    float PerlinNoise_1D(float x, int seed);
     
 private:
     
-    int Number_Of_Octaves = 5;
-    int persistence = 10;
+    int Number_Of_Octaves = 2;
+    int persistence = 1;
     
 };
 

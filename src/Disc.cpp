@@ -26,9 +26,9 @@ void Disc::setup(){
         else radii.push_back(radii[i-1] + ofRandom(50) + 15.);
         
         // generate texture densities, rule out non-symmetrics
-        float thisDensity = ofRandom(15.) + 1;
-        while ((int) thisDensity == 7 || (int) thisDensity == 11 || (int) thisDensity == 13) {
-            thisDensity = ofRandom(15.) + 1;
+        float thisDensity = ofRandom(30) + 1;
+        while ((int) thisDensity % 360 != 0) {
+            thisDensity = ofRandom(30) + 1;
             //            cout << "recalculating" << endl;
         }
         density.push_back(thisDensity);
@@ -61,14 +61,15 @@ void Disc::setup(){
         
     }
     
-    //    for (int i = 0; i <100; i++) {
-    //        float n = Noise(i);
-    //        cout<< n <<endl;
-    //    }
+//        for (int i = 0; i <100; i++) {
+//            float n = perlinz.PerlinNoise_1D(i,2837);
+//            cout<< n <<endl;
+//        }
     
 }
 
 void Disc::update(){
+    
     
     for(int i = 0; i < discIndex; i++){
         
@@ -79,7 +80,7 @@ void Disc::update(){
         }
         
         if(perlin[i] == 1){
-            
+        
             float position = getPosition(i);
             float time = ofGetElapsedTimef();
             float timeScale = 1;
@@ -96,9 +97,9 @@ void Disc::update(){
             
 //            position += (sin((time*timeScale)) * displacementScale) - (position/2);
            
-            //        position += (perlinObject->PerlinNoise_1D(time*timeScale+timeOffset)) * displacementScale;
-            
-            
+            position += (perlinz.PerlinNoise_1D(time*timeScale+timeOffset, 3)) * displacementScale;
+        cout<< position <<endl;
+        
             //update groove position
 //            setPosition(i, position);
             
