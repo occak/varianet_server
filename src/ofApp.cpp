@@ -376,8 +376,8 @@ void ofApp::update(){
                         state += "rotationSpeed"+ofToString(j) + ": " + ofToString(disc.getNetRotationSpeed(j)) + "//";
                         state += "texture"+ofToString(j) + ": " + ofToString(disc.getTexture(j)) + "//";
                         state += "zPosition"+ofToString(j) + ": " + ofToString(disc.getPosition(j)) + "//";
-                        state += "posOffset"+ofToString(j) + ": " + ofToString(disc.getPosOffset(j)) + "//";
-                        state += "counter"+ofToString(j) + ": "+ ofToString(disc.getColor(j)) + "//";
+                        state += "seed"+ofToString(j) + ": " + ofToString(disc.getSeed(j)) + "//";
+                        state += "counter"+ofToString(j) + ": "+ ofToString(disc.getCounter(j)) + "//";
                         state += "mute"+ofToString(j) + ": " + ofToString(disc.isMute(j)) + "//";
                         state += "perlin"+ofToString(j) + ": " + ofToString(disc.isMoving(j)) + "//";
                     }

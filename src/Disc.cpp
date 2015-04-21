@@ -27,10 +27,10 @@ void Disc::setup(){
         
         // generate texture densities, rule out non-symmetrics
         float thisDensity = ofRandom(30) + 1;
-        while ((int) thisDensity % 360 != 0) {
-            thisDensity = ofRandom(30) + 1;
-            //            cout << "recalculating" << endl;
-        }
+//        while ((int) thisDensity % 360 != 0) {
+//            thisDensity = ofRandom(30) + 1;
+//            //            cout << "recalculating" << endl;
+//        }
         density.push_back(thisDensity);
         //        cout << (int) thisDensity << endl;
         
@@ -45,7 +45,7 @@ void Disc::setup(){
         zPosition.push_back(0.);
         
         posOffset.push_back(180 * (int)ofRandom(2));
-        counter.push_back(0);
+        counter.push_back(0.);
         
         //z-motion is off
         perlin.push_back(0);
@@ -58,13 +58,10 @@ void Disc::setup(){
         
         //muting, all initially false
         mute.push_back(0);
-        
+     
+        //seeds for perlin generators
+        seed.push_back((int) ofRandom(10000));
     }
-    
-//        for (int i = 0; i <100; i++) {
-//            float n = perlinz.PerlinNoise_1D(i,2837);
-//            cout<< n <<endl;
-//        }
     
 }
 
@@ -97,8 +94,8 @@ void Disc::update(){
             
 //            position += (sin((time*timeScale)) * displacementScale) - (position/2);
            
-            position += (perlinz.PerlinNoise_1D(time*timeScale+timeOffset, 3)) * displacementScale;
-        cout<< position <<endl;
+//            position += (perlinz.PerlinNoise_1D(time*timeScale+timeOffset, 3)) * displacementScale;
+
         
             //update groove position
 //            setPosition(i, position);
@@ -370,7 +367,6 @@ int Disc::isMoving(int index) const{
 void Disc::setMoving(int index, int moving){
     
     perlin[index] = moving;
-    
 }
 
 int Disc::getCounter(int index) const{
@@ -378,4 +374,11 @@ int Disc::getCounter(int index) const{
 }
 void Disc::setCounter(int index, int value){
     counter[index] = value;
+}
+
+int Disc::getSeed(int index) const{
+    return seed[index];
+}
+void Disc::setSeed(int index, int value){
+    seed[index] = value;
 }
