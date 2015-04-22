@@ -526,16 +526,19 @@ void ofApp::update(){
                 }
                 
                 else if (title == "life"){
-                    for (int j = 0; j < players.size(); j++) {
-                        if(server.getClientIP(i) == players[j]->getIP()) {
-                            vector<string> nameValue;
-                            nameValue = ofSplitString(received[2], ": ");
-                            players[j]->setLife(ofToFloat(nameValue[1]));
-                            break;
+                    Player *_player = NULL;
+                    for(int j = 1; j < received.size(); j++ ){
+                        vector<string> playerData = ofSplitString(received[j], ": ");;
+                        if (playerData[0] == "IP"){
+                            for (int k = 0; k < players.size(); k++) {
+                                if(playerData[1] == players[k]->getIP()) {
+                                    _player = players[k];
+                                    break;
+                                }
+                            }
                         }
-                        else continue;
+                        if (playerData[0] == "life" && _player != NULL) _player->setLife(ofToFloat(playerData[1]));
                     }
-                    
                 }
                 
                 else if (title == "goodbye"){
