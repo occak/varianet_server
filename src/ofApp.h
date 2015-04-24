@@ -25,27 +25,11 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
     
-    float triangleWave(float frequency);
-    float squareWave(float frequency);
-    float sawWave(float frequency);
-    
-    //audio
-    void audioOut( float * output, int bufferSize, int nChannels );
-    double phase;
-    float volume;
-    
-    void soundChange(string name, int index, float value);
-    
     //ui
     void exit();
-    void guiEvent(ofxUIEventArgs &e);
     
     //game
     float costRadius, costTexture, costDensity, costRotation, costMute, costMove;
-    bool radiusChanged, textureChanged, densityChanged, rotationChanged, positionChanged = false;
-		
-    
-    ofEasyCam cam;
     
     //TCP
     ofxTCPServer server;
@@ -60,9 +44,9 @@ private:
 //    Groove groove;
     Disc disc;
     vector<Player *> players;
+    
     Sound sound;
     
-    vector<ofxUICanvas *> ui;
 
 
 };
