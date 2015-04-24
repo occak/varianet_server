@@ -1,11 +1,9 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxUI.h"
 #include "Groove.h"
 #include "Disc.h"
 #include "Player.h"
-#include "Sound.h"
 #include "ofxNetwork.h"
 
 
@@ -45,7 +43,6 @@ private:
     Disc disc;
     vector<Player *> players;
     
-    Sound sound;
     
 
 

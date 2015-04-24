@@ -13,11 +13,6 @@
 
 #include <stdio.h>
 #include "ofMain.h"
-#include "Perlin.h"
-
-
-
-
 
 class Disc{
 
@@ -81,6 +76,10 @@ class Disc{
     int getSeed(int index) const;
     void setSeed(int index, int value);
     
+    float getScale(int index) const;
+    float getScaleSize() const;
+    void setScale(int index, float value);
+    
     float origin = 10;
     int selected = -1;
     vector<int> resetPerlin;
@@ -101,12 +100,11 @@ private:
     vector<int> density;
     
     vector<float> zPosition;
-    vector<float> posOffset;
-    
-    vector<ofColor> playerColor;
     
     //adsr
     vector< vector <float> > envelope;
+    //sound
+    vector<float> scale;
     
     //mute
     vector<int> mute;
@@ -115,7 +113,6 @@ private:
     vector<int> perlin;
     vector<int> seed;
     vector<float> counter;
-    Perlin perlinz;
     
 };
 

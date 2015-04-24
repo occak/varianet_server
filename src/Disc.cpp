@@ -10,14 +10,19 @@
 
 void Disc::setup(){
     
-    life = 100;         // initial life value
-    
     discIndex = 10;    // 10 discs
     
-    //colors for players when they log in
-    playerColor.push_back(ofColor(161,24,87));
-    playerColor.push_back(ofColor(255,153,0));
-    playerColor.push_back(ofColor(50,153,187));
+    //scale
+    scale.push_back(ofRandom(25));
+    scale.push_back(ofRandom(25));
+    scale.push_back(ofRandom(25));
+    scale.push_back(ofRandom(25));
+    scale.push_back(ofRandom(25));
+    scale.push_back(ofRandom(25));
+    scale.push_back(ofRandom(25));
+    scale.push_back(ofRandom(25));
+    scale.push_back(ofRandom(25));
+    scale.push_back(ofRandom(25));
     
     for(int i = 0; i < discIndex; i++){
         
@@ -44,7 +49,6 @@ void Disc::setup(){
         // set depths, all zero by default
         zPosition.push_back(0.);
         
-        posOffset.push_back(180 * (int)ofRandom(2));
         counter.push_back(0.);
         
         //z-motion is off
@@ -62,7 +66,6 @@ void Disc::setup(){
         //seeds for perlin generators
         seed.push_back((int) ofRandom(10000));
     }
-    
 }
 
 void Disc::update(){
@@ -74,23 +77,11 @@ void Disc::update(){
         if(resetPerlin[i] == 1){
             setPosition(i, 0);
             perlin[i] = 0;
+            resetPerlin[i] = 0;
         }
         
         if(perlin[i] == 1){
         
-            float position = getPosition(i);
-            float time = ofGetElapsedTimef();
-            float timeScale = 1;
-            float displacementScale = 10;
-            float timeOffset = getPosOffset(i);
-            
-            // A typical design pattern for using Perlin noise uses a couple parameters:
-            // ofSignedNoise(time*timeScale+timeOffset)*displacementScale
-            //     ofSignedNoise(time) gives us noise values that change smoothly over time
-            //     ofSignedNoise(time*timeScale) allows us to control the smoothness of our noise (smaller timeScale, smoother values)
-            //     ofSignedNoise(time+timeOffset) allows us to use the same Perlin noise function to control multiple things and have them look as if they are moving independently
-            //     ofSignedNoise(time)*displacementScale allows us to change the bounds of the noise from [-1, 1] to whatever we want
-            // Combine all of those parameters together, and you've got some nice control over your noise
             
 //            position += (sin((time*timeScale)) * displacementScale) - (position/2);
            
@@ -101,7 +92,7 @@ void Disc::update(){
 //            setPosition(i, position);
             
         }
-        resetPerlin[i] = 0;
+        
     }
     
 }
@@ -250,19 +241,6 @@ void Disc::setPosition(int index, float newPosition){
 }
 
 //----------------------------------
-
-float Disc::getPosOffset(int index) const{
-    
-    return posOffset[index];
-}
-//----------------------------------
-
-void Disc::setPosOffset (int index, float newOffset){
-    
-    posOffset[index] = newOffset;
-}
-
-//----------------------------------
 float Disc::getLife() const{
     
     return life;
@@ -272,13 +250,6 @@ float Disc::getLife() const{
 void Disc::setLife(float cost){
     
     life -= cost;
-}
-
-//----------------------------------
-ofColor Disc::getColor(int index) const{
-    
-    return playerColor[index];
-    
 }
 
 //----------------------------------
@@ -360,7 +331,6 @@ void Disc::setMute(int index, int onOff){
 int Disc::isMoving(int index) const{
     
     return perlin[index];
-    
 }
 
 //----------------------------------
@@ -370,15 +340,36 @@ void Disc::setMoving(int index, int moving){
 }
 
 int Disc::getCounter(int index) const{
+    
     return counter[index];
 }
+
 void Disc::setCounter(int index, int value){
+    
     counter[index] = value;
 }
 
 int Disc::getSeed(int index) const{
+    
     return seed[index];
 }
+
 void Disc::setSeed(int index, int value){
+    
     seed[index] = value;
+}
+
+float Disc::getScale(int index) const{
+    
+    return scale[index];
+}
+
+float Disc::getScaleSize() const{
+    
+    return scale.size();
+}
+
+void Disc::setScale(int index, float value){
+    
+    scale[index] = value;
 }

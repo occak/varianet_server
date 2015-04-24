@@ -15,17 +15,7 @@ void Sound::setup(Disc* disc){
     ///////////////////////
     // Tonic Synth setup
     ///////////////////////
-    
-    scale.push_back(ofRandom(25));
-    scale.push_back(ofRandom(25));
-    scale.push_back(ofRandom(25));
-    scale.push_back(ofRandom(25));
-    scale.push_back(ofRandom(25));
-    scale.push_back(ofRandom(25));
-    scale.push_back(ofRandom(25));
-    scale.push_back(ofRandom(25));
-    scale.push_back(ofRandom(25));
-    scale.push_back(ofRandom(25));
+
     
 //    for(int i = 0; i < disc->getDiscIndex(); i++){
 //        
@@ -81,21 +71,4 @@ void Sound::setup(Disc* disc){
 //    
 //    Generator reverb = Reverb().input(master).stereoWidth(1).wetLevel(.3);
 //    synth.setOutputGen(master);
-}
-
-void Sound::update(){
-    
-    
-}
-
-float Sound::getScale(int index) const{
-
-    return scale[index];
-
-}
-
-void Sound::setScale(int index, float value){
-    
-    scale[index] = value;
-    
 }

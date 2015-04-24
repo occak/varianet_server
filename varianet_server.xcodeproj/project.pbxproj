@@ -79,11 +79,8 @@
 		BB4A3A16145CD835A96AC7C0 /* ADSR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E4080D90808304BB6ADBDA1 /* ADSR.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
 		BE3D60881AD801A3001E7499 /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE3D60861AD801A3001E7499 /* Player.cpp */; };
-		BE3D60981AD8236F001E7499 /* Perlin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE3D60961AD8236E001E7499 /* Perlin.cpp */; };
 		BED9A40589B3C3818B5CDA19 /* BufferFiller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3331D9C56D08FB10A7627E89 /* BufferFiller.cpp */; };
-		BEE5BA961ACC00DA0063FC38 /* Sound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BEE5BA901ACC00DA0063FC38 /* Sound.cpp */; };
 		BEE5BA971ACC00DA0063FC38 /* Disc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BEE5BA911ACC00DA0063FC38 /* Disc.cpp */; };
-		BEE5BA981ACC00DA0063FC38 /* Groove.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BEE5BA921ACC00DA0063FC38 /* Groove.cpp */; };
 		C0D0CF4DE6DE6E3AB728BC33 /* ofxUIWidgetWithLabel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4995F882147CFF0AA3EBCC40 /* ofxUIWidgetWithLabel.cpp */; };
 		C39B1EE5F24BEFFE19D5CA0F /* ofxUI2DGraph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 61D9BF69616E7136E1C12984 /* ofxUI2DGraph.cpp */; };
 		C3D50F5414A80C389179406D /* ControlRandom.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 88C13355D22E9BC1C34817BC /* ControlRandom.cpp */; };
@@ -337,14 +334,8 @@
 		BC30920A3770AF92ABC0D364 /* StereoDelay.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = StereoDelay.cpp; path = "../../openFrameworks/of_v0.8.4_osx_release/addons/ofxTonic-master/src/Tonic/StereoDelay.cpp"; sourceTree = SOURCE_ROOT; };
 		BE3D60861AD801A3001E7499 /* Player.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Player.cpp; sourceTree = "<group>"; };
 		BE3D60871AD801A3001E7499 /* Player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
-		BE3D60961AD8236E001E7499 /* Perlin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Perlin.cpp; sourceTree = "<group>"; };
-		BE3D60971AD8236F001E7499 /* Perlin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Perlin.h; sourceTree = "<group>"; };
-		BEE5BA901ACC00DA0063FC38 /* Sound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Sound.cpp; sourceTree = "<group>"; };
 		BEE5BA911ACC00DA0063FC38 /* Disc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Disc.cpp; sourceTree = "<group>"; };
-		BEE5BA921ACC00DA0063FC38 /* Groove.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Groove.cpp; sourceTree = "<group>"; };
 		BEE5BA931ACC00DA0063FC38 /* Disc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Disc.h; sourceTree = "<group>"; };
-		BEE5BA941ACC00DA0063FC38 /* Sound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sound.h; sourceTree = "<group>"; };
-		BEE5BA951ACC00DA0063FC38 /* Groove.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Groove.h; sourceTree = "<group>"; };
 		BF525F0887A63B5E6FC5578E /* Noise.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Noise.cpp; path = "../../openFrameworks/of_v0.8.4_osx_release/addons/ofxTonic-master/src/Tonic/Noise.cpp"; sourceTree = SOURCE_ROOT; };
 		BFFBEE0796BE9DCF4DB9F0DA /* RampedValue.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = RampedValue.cpp; path = "../../openFrameworks/of_v0.8.4_osx_release/addons/ofxTonic-master/src/Tonic/RampedValue.cpp"; sourceTree = SOURCE_ROOT; };
 		C4FFA9A0771A49EDCD706154 /* Generator.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Generator.cpp; path = "../../openFrameworks/of_v0.8.4_osx_release/addons/ofxTonic-master/src/Tonic/Generator.cpp"; sourceTree = SOURCE_ROOT; };
@@ -699,14 +690,8 @@
 				E4B69E1F0A3A1BDC003C02F2 /* ofApp.h */,
 				BEE5BA911ACC00DA0063FC38 /* Disc.cpp */,
 				BEE5BA931ACC00DA0063FC38 /* Disc.h */,
-				BEE5BA921ACC00DA0063FC38 /* Groove.cpp */,
-				BEE5BA951ACC00DA0063FC38 /* Groove.h */,
-				BEE5BA901ACC00DA0063FC38 /* Sound.cpp */,
-				BEE5BA941ACC00DA0063FC38 /* Sound.h */,
 				BE3D60861AD801A3001E7499 /* Player.cpp */,
 				BE3D60871AD801A3001E7499 /* Player.h */,
-				BE3D60961AD8236E001E7499 /* Perlin.cpp */,
-				BE3D60971AD8236F001E7499 /* Perlin.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -967,7 +952,6 @@
 				820F4D955C6C9F144B9B3CFF /* ControlXYSpeed.cpp in Sources */,
 				6D6A8FCDB37B77BB6C36169E /* DelayUtils.cpp in Sources */,
 				BE3D60881AD801A3001E7499 /* Player.cpp in Sources */,
-				BEE5BA981ACC00DA0063FC38 /* Groove.cpp in Sources */,
 				8BB9FDF307DCB204CE8AA997 /* Effect.cpp in Sources */,
 				7CD15114DE0AB3BF32376263 /* Filters.cpp in Sources */,
 				F274D3323EBBE88EDA5368D1 /* FilterUtils.cpp in Sources */,
@@ -998,11 +982,9 @@
 				EAC0C1D4A69D5E5BA80B1B0D /* ofxUICircleSlider.cpp in Sources */,
 				EDCA45393BF1B587886DFDB4 /* ofxUIDragableLabelButton.cpp in Sources */,
 				388ADD56955FC29E468333A4 /* ofxUIDropDownList.cpp in Sources */,
-				BE3D60981AD8236F001E7499 /* Perlin.cpp in Sources */,
 				3014214B2349EBF5D0C178FE /* ofxUIEventArgs.cpp in Sources */,
 				FF4689F86EC8CD3F4D0C3D2F /* ofxUIFPS.cpp in Sources */,
 				306C68433A841F2C22A5DED8 /* ofxUIFPSSlider.cpp in Sources */,
-				BEE5BA961ACC00DA0063FC38 /* Sound.cpp in Sources */,
 				3902518F09F904E31AFFD683 /* ofxUIImage.cpp in Sources */,
 				9C428A4D0BC3C8ECC39B106D /* ofxUIImageButton.cpp in Sources */,
 				3A21927294C48DED9DF9C829 /* ofxUIImageSampler.cpp in Sources */,

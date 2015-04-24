@@ -25,7 +25,7 @@ void ofApp::setup(){
     disc.setup();
 
     
-    sound.setup(&disc);
+//    sound.setup(&disc);
     
     // set up game costs
 //    costRadius = 1;
@@ -118,9 +118,9 @@ void ofApp::update(){
                     
                     string scale;
                     scale += "scale//";
-                    for(int j = 0; j < sound.scale.size(); j++){
-                        if( j == sound.scale.size()-1 ) scale += ofToString(sound.scale[j]);
-                        else scale += ofToString(sound.scale[j])+": ";
+                    for(int j = 0; j < disc.getScaleSize(); j++){
+                        if( j == disc.getScaleSize()-1 ) scale += ofToString(disc.getScale(j));
+                        else scale += ofToString(disc.getScale(j))+": ";
                     }
                     server.send(i, scale);
                     
