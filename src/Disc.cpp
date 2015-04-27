@@ -27,11 +27,11 @@ void Disc::setup(){
     for(int i = 0; i < discIndex; i++){
         
         // generate radius information of discs
-        if (i == 0) radii.push_back(ofRandom(50) + 15.);
-        else radii.push_back(radii[i-1] + ofRandom(50) + 15.);
+        if (i == 0) radii.push_back(15.);
+        else radii.push_back(radii[i-1] + 15.);
         
         // generate texture densities, rule out non-symmetrics
-        float thisDensity = ofRandom(30) + 1;
+        float thisDensity = 15;
 //        while ((int) thisDensity % 360 != 0) {
 //            thisDensity = ofRandom(30) + 1;
 //            //            cout << "recalculating" << endl;
@@ -44,7 +44,7 @@ void Disc::setup(){
         rotationSpeed.push_back(0);
         
         // determine texture type
-        texture.push_back((int) ofRandom(5));
+        texture.push_back(0);
         
         // set depths, all zero by default
         zPosition.push_back(0.);
