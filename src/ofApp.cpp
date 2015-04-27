@@ -115,16 +115,6 @@ void ofApp::update(){
                         if(j != i) server.send(j, newPlayerInfo);
                     }
                     
-                    
-                    string scale;
-                    scale += "scale//";
-                    for(int j = 0; j < disc.getScaleSize(); j++){
-                        if( j == disc.getScaleSize()-1 ) scale += ofToString(disc.getScale(j));
-                        else scale += ofToString(disc.getScale(j))+": ";
-                    }
-                    server.send(i, scale);
-                    
-                    
                     string state;   //prepare to send the current state of the server
                     state += "state//";
                     state += "discIndex: " + ofToString(disc.getDiscIndex()) + "//";
@@ -267,6 +257,7 @@ void ofApp::update(){
             for(int j = 0; j < players.size(); j++){
                 if(server.getClientIP(i) == players[j]->getIP()) players[j]->setConnection(false);
             }
+            server.sendToAll("goodbye//"+server.getClientIP(i));
         }
     }
 }

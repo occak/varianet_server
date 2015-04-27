@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ofMain.h"
-#include "Groove.h"
 #include "Disc.h"
 #include "Player.h"
 #include "ofxNetwork.h"

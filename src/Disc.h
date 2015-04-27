@@ -103,8 +103,6 @@ private:
     
     //adsr
     vector< vector <float> > envelope;
-    //sound
-    vector<float> scale;
     
     //mute
     vector<int> mute;

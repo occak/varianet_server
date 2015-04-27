@@ -12,18 +12,6 @@ void Disc::setup(){
     
     discIndex = 10;    // 10 discs
     
-    //scale
-    scale.push_back(ofRandom(25));
-    scale.push_back(ofRandom(25));
-    scale.push_back(ofRandom(25));
-    scale.push_back(ofRandom(25));
-    scale.push_back(ofRandom(25));
-    scale.push_back(ofRandom(25));
-    scale.push_back(ofRandom(25));
-    scale.push_back(ofRandom(25));
-    scale.push_back(ofRandom(25));
-    scale.push_back(ofRandom(25));
-    
     for(int i = 0; i < discIndex; i++){
         
         // generate radius information of discs
@@ -358,18 +346,18 @@ void Disc::setSeed(int index, int value){
     
     seed[index] = value;
 }
-
-float Disc::getScale(int index) const{
-    
-    return scale[index];
-}
-
-float Disc::getScaleSize() const{
-    
-    return scale.size();
-}
-
-void Disc::setScale(int index, float value){
-    
-    scale[index] = value;
-}
+//
+//float Disc::getScale(int index) const{
+//    
+//    return scale[index];
+//}
+//
+//float Disc::getScaleSize() const{
+//    
+//    return scale.size();
+//}
+//
+//void Disc::setScale(int index, float value){
+//    
+//    scale[index] = value;
+//}
