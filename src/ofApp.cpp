@@ -227,7 +227,7 @@ void ofApp::update(){
                 else if (title == "life"){
                     Player *_player = NULL;
                     for(int j = 1; j < received.size(); j++ ){
-                        vector<string> playerData = ofSplitString(received[j], ": ");;
+                        vector<string> playerData = ofSplitString(received[j], ": ");
                         if (playerData[0] == "IP"){
                             for (int k = 0; k < players.size(); k++) {
                                 if(playerData[1] == players[k]->getIP()) {
@@ -237,6 +237,22 @@ void ofApp::update(){
                             }
                         }
                         if (playerData[0] == "life" && _player != NULL) _player->setLife(ofToFloat(playerData[1]));
+                    }
+                }
+                
+                else if (title == "otherPlayersIndex"){
+                    for(int i = 1; i < received.size(); i++ ){
+                        vector<string> playerData = ofSplitString(received[i], ": ");
+                        int thisPlayer;
+                        if (playerData[0] == "IP"){
+                            for (int j = 0; j < players.size(); j++) {
+                                if(playerData[1] == players[j]->getIP()) {
+                                    thisPlayer = j;
+                                    break;
+                                }
+                            }
+                        }
+                        if (playerData[0] == "index") players[thisPlayer]->setDiscIndex(ofToInt(playerData[1]));
                     }
                 }
                 
