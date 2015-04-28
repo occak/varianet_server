@@ -97,7 +97,7 @@ private:
     
     vector<int> discSelected;
     vector<float> radii;
-    vector<int> density;
+    vector<float> density;
     
     vector<float> zPosition;
     
