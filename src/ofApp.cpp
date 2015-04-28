@@ -257,7 +257,7 @@ void ofApp::update(){
             for(int j = 0; j < players.size(); j++){
                 if(server.getClientIP(i) == players[j]->getIP()) players[j]->setConnection(false);
             }
-            server.sendToAll("goodbye//"+server.getClientIP(i));
+//            server.sendToAll("goodbye//"+server.getClientIP(i));
         }
     }
 }
