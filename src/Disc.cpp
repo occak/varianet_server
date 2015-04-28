@@ -19,7 +19,7 @@ void Disc::setup(){
         else radii.push_back(radii[i-1] + 15.);
         
         // generate texture densities, rule out non-symmetrics
-        float thisDensity = 15;
+        float thisDensity = 30;
 //        while ((int) thisDensity % 360 != 0) {
 //            thisDensity = ofRandom(30) + 1;
 //            //            cout << "recalculating" << endl;
