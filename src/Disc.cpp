@@ -15,7 +15,7 @@ void Disc::setup(){
     for(int i = 0; i < discIndex; i++){
         
         // generate radius information of discs
-        if (i == 0) radii.push_back(15.);
+        if (i == 0) radii.push_back(15. + origin);
         else radii.push_back(radii[i-1] + 15.);
         
         // generate texture densities, rule out non-symmetrics
